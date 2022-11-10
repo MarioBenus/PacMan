@@ -18,6 +18,7 @@ public class PlayerManager {
          * aby rychlost zostala rovnaka aj ked sa dlzka ticku zmeni
          */
         this.rychlostPohybu = tickLength / 4;
+
         this.player = new Kruh();
         this.player.zmenFarbu("yellow");
         this.player.zobraz();
@@ -54,6 +55,7 @@ public class PlayerManager {
     }
 
     
+    // princip fungovania triedy ManazerKlaves je prevzaty z TvaryV3
     private class ManazerKlaves extends KeyAdapter {
         public void keyPressed(KeyEvent event) {
 

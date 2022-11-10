@@ -20,9 +20,10 @@ public class GameManager {
         this.playerManager = new PlayerManager(TICK_LENGTH);
     }
 
+    // princip fungovania triedy ManazerCasovaca je prevzaty z TvaryV3
     private class ManazerCasovaca implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            long newTick = System.nanoTime() / 1000000;
+            long newTick = System.nanoTime() / 1000000; // prevod z nanosekund do milisekund
             if (newTick - GameManager.this.oldTick >= TICK_LENGTH || newTick < TICK_LENGTH) {
                 GameManager.this.oldTick = newTick;
                 GameManager.this.playerManager.tick();

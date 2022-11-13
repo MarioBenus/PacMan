@@ -1,14 +1,14 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 
-public class PlayerManager {
+public class Hrac {
     private int rychlostPohybu;
     
-    private Direction playerDirection;
-    private Kruh player;
+    private Direction hracSmer;
+    private Kruh hrac;
     
     // konstruktor
-    public PlayerManager(int tickLength) {
+    public Hrac(int tickLength) {
         Platno.dajPlatno().addKeyListener(new ManazerKlaves());
 
         // nastavenie vlastnosti hraca
@@ -19,27 +19,27 @@ public class PlayerManager {
          */
         this.rychlostPohybu = tickLength / 4;
 
-        this.player = new Kruh();
-        this.player.zmenFarbu("yellow");
-        this.player.zobraz();
-        this.playerDirection = Direction.NONE;
+        this.hrac = new Kruh();
+        this.hrac.zmenFarbu("yellow");
+        this.hrac.zobraz();
+        this.hracSmer = Direction.NONE;
 
     }
 
     // movement hraca podla posledneho stlaceneho smeru
     public void tick() {
-        switch (this.playerDirection) {
+        switch (this.hracSmer) {
             case UP:
-                this.player.posunZvisle(-rychlostPohybu);
+                this.hrac.posunZvisle(-rychlostPohybu);
                 break;
             case DOWN:
-                this.player.posunZvisle(rychlostPohybu);
+                this.hrac.posunZvisle(rychlostPohybu);
                 break;
             case LEFT:
-                this.player.posunVodorovne(-rychlostPohybu);
+                this.hrac.posunVodorovne(-rychlostPohybu);
                 break;
             case RIGHT:
-                this.player.posunVodorovne(rychlostPohybu);
+                this.hrac.posunVodorovne(rychlostPohybu);
                 break;
             default:
                 break;
@@ -61,16 +61,16 @@ public class PlayerManager {
 
             // nastavuje smer pohybu hraca na smer poslednej stlacenej sipky
             if (event.getKeyCode() == KeyEvent.VK_DOWN) {
-                PlayerManager.this.playerDirection = Direction.DOWN;
+                Hrac.this.hracSmer = Direction.DOWN;
 
             } else if (event.getKeyCode() == KeyEvent.VK_UP) {
-                PlayerManager.this.playerDirection = Direction.UP;
+                Hrac.this.hracSmer = Direction.UP;
 
             } else if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-                PlayerManager.this.playerDirection = Direction.LEFT;
+                Hrac.this.hracSmer = Direction.LEFT;
 
             } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-                PlayerManager.this.playerDirection = Direction.RIGHT;
+                Hrac.this.hracSmer = Direction.RIGHT;
 
             }
         }

@@ -11,6 +11,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -38,8 +40,8 @@ public class Platno {
      */
     public static Platno dajPlatno() {
         if (Platno.platnoSingleton == null) {
-            Platno.platnoSingleton = new Platno("Pac-Man", 600, 600, 
-                                                Color.black);
+            Platno.platnoSingleton = new Platno("BlueJ Shapes Demo", 1000, 1000, 
+                                         Color.black);
         }
         Platno.platnoSingleton.setVisible(true);
         return Platno.platnoSingleton;
@@ -54,7 +56,7 @@ public class Platno {
     private Image canvasImage;
     private Timer timer;
     private List<Object> objekty;
-    private HashMap<Object, PopisTvaru> tvary;
+    private HashMap<Object, IPopisTvaru> tvary;
     
     /**
      * Create a Canvas.
@@ -74,7 +76,7 @@ public class Platno {
         this.pozadie = pozadie;
         this.frame.pack();
         this.objekty = new ArrayList<Object>();
-        this.tvary = new HashMap<Object, PopisTvaru>();
+        this.tvary = new HashMap<Object, IPopisTvaru>();
     }
 
     /**
@@ -111,7 +113,24 @@ public class Platno {
         this.objekty.remove(objekt);   // just in case it was already there
         this.objekty.add(objekt);      // add at the end
         this.tvary.put(objekt, new PopisTvaru(tvar, farba));
-        this.redraw();
+        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
+    }
+    
+    /**
+     * Draw a given image onto the canvas.
+     * @param  referenceObject  an object to define identity for this image
+     * @param  image            the image object to be drawn on the canvas
+     * @param  transform        the transformation applied to the image
+     */
+    public void draw(Object objekt, BufferedImage image, AffineTransform transform) {
+        //this.objekty.remove(objekt);   // just in case it was already there
+        if (!this.objekty.contains(objekt)) { // Zmenene, pretoze som dostaval concurrentmodificationexception MARIO
+            this.objekty.add(objekt);      // add at the end
+        }
+        
+        
+        this.tvary.put(objekt, new PopisObrazku(image, transform));
+        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
     }
  
     /**
@@ -121,7 +140,7 @@ public class Platno {
     public void erase(Object objekt) {
         this.objekty.remove(objekt);   // just in case it was already there
         this.tvary.remove(objekt);
-        this.redraw();
+        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
     }
 
     /**
@@ -165,11 +184,14 @@ public class Platno {
     /**
      * * Redraw all shapes currently on the Canvas.
      */
-    private void redraw() {
+    public void redraw() { /////////////////////// zmenene na public MARIO ////////////////////////////////
         this.erase();
+
         for (Object tvar : this.objekty ) {
             this.tvary.get(tvar).draw(this.graphic);
         }
+        
+        
         this.canvas.repaint();
     }
        
@@ -213,7 +235,12 @@ public class Platno {
      * Canvas frame. This is essentially a JPanel with added capability to
      * refresh the image drawn on it.
      */
-    private class PopisTvaru {
+    
+    private interface IPopisTvaru {
+        void draw(Graphics2D graphic);
+    }
+    
+    private class PopisTvaru implements IPopisTvaru {
         private Shape tvar;
         private String farba;
 
@@ -225,6 +252,20 @@ public class Platno {
         public void draw(Graphics2D graphic) {
             Platno.this.setForegroundColor(this.farba);
             graphic.fill(this.tvar);
+        }
+    }
+    
+    private class PopisObrazku implements IPopisTvaru {
+        private BufferedImage obrazok;
+        private AffineTransform transformacia;
+        
+        public PopisObrazku(BufferedImage obrazok, AffineTransform transformacia) {
+            this.obrazok = obrazok;
+            this.transformacia = transformacia;
+        }
+        
+        public void draw(Graphics2D graphic) {
+            graphic.drawImage(this.obrazok, this.transformacia, null); 
         }
     }
 }

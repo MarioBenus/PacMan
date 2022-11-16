@@ -2,7 +2,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 
 public class Hrac {
-    double rychlostPohybu;
+    private double rychlostPohybu;
     
     private Direction hracSmer;
     private Obrazok hrac;

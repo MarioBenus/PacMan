@@ -48,7 +48,7 @@ public class Hra {
             //System.out.println("sleep for " + ((TICK_DLZKA - (novyTick - staryTick)) / 1000000));
             //System.out.println("delta tick: " + (novyTick - staryTick));
             if ((TICK_DLZKA - (novyTick - staryTick)) / 1000000 > 0) {
-                Thread.sleep((long) ((TICK_DLZKA - (novyTick - staryTick)) / 1000000), (int) ((TICK_DLZKA - (novyTick - staryTick)) % 1000000));
+                Thread.sleep((long)((TICK_DLZKA - (novyTick - staryTick)) / 1000000), (int)((TICK_DLZKA - (novyTick - staryTick)) % 1000000));
             }
             //double staryStaryTick = System.nanoTime();
             //System.out.println(staryStaryTick - novyNovyTick + " pls");

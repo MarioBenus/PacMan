@@ -9,8 +9,8 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionListener;
+//import java.awt.event.MouseListener;
+//import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -210,13 +210,13 @@ public class Platno {
         this.frame.addKeyListener(listener);
     }
     
-    public void addMouseListener(MouseListener listener) {
+    /*public void addMouseListener(MouseListener listener) {
         this.canvas.addMouseListener(listener);
     }
     
     public void addTimerListener(ActionListener listener) {
         this.timer.addActionListener(listener);
-    }
+    }*/
 
 
     /************************************************************************

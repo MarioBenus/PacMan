@@ -42,6 +42,10 @@ public class Obrazok {
         this.jeViditelny = true;
         this.nakresli();
     }
+
+    public double[] getSuradnice() {
+        return new double[] {this.lavyHornyX, this.lavyHornyY};
+    }
     
     /**
      * (Obrázok) Zobraz sa.

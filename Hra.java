@@ -8,9 +8,9 @@ import java.awt.event.ActionEvent;*/
  * @version (a version number or a date)
  */
 public class Hra {
-    private static final double TICK_DLZKA = 16666666;
-    /*private long staryTick;
-    private long staryStaryTick;*/
+    private static final double TICK_DLZKA = 1000000000 / 60;
+    /*private long zaciatocnyTick;
+    private long staryzaciatocnyTick;*/
 
     private Hrac hrac;
     
@@ -24,35 +24,36 @@ public class Hra {
         this.pozadie.zmenPolohu(500, 500);
         this.pozadie.zobraz();
 
-        /*this.staryTick = 0;
-        this.staryStaryTick = 0;*/
+        /*this.zaciatocnyTick = 0;
+        this.staryzaciatocnyTick = 0;*/
 
         // double novyNovyTick = 0;
         // double dlzkaHernehoTicku2 = 0;
-        double novyTick = 0;
+        double sleepTick = 0;
+        double zaciatocnyTick = 0;
 
         while (true) {
-            double staryTick = System.nanoTime();
+            double deltaCas = System.nanoTime() - zaciatocnyTick;
+            System.out.println("delta cas: " + deltaCas);
+            zaciatocnyTick = System.nanoTime();
 
-            // ZAKOMENTOVANE PROFILERY
 
-            //double dlzkaHernehoTicku = System.nanoTime();
 
-            Hra.this.hrac.tick(staryTick - novyTick);
+            Hra.this.hrac.tick(deltaCas);
             Platno.dajPlatno().redraw();
 
-            //dlzkaHernehoTicku2 = System.nanoTime();
-            //System.out.println("tato hovadina trva "  + (dlzkaHernehoTicku2 - dlzkaHernehoTicku));
+            sleepTick = System.nanoTime();
+            System.out.println("game loop: " + (sleepTick - zaciatocnyTick));
 
-            novyTick = System.nanoTime();
-            //System.out.println("sleep for " + ((TICK_DLZKA - (novyTick - staryTick)) / 1000000));
-            //System.out.println("delta tick: " + (novyTick - staryTick));
-            if ((TICK_DLZKA - (novyTick - staryTick)) / 1000000 > 0) {
-                Thread.sleep((long)((TICK_DLZKA - (novyTick - staryTick)) / 1000000), (int)((TICK_DLZKA - (novyTick - staryTick)) % 1000000));
+            System.out.print("spat: " + (long)((TICK_DLZKA - (sleepTick - zaciatocnyTick)) / 1000000));
+            System.out.println(" " + (int)((TICK_DLZKA - (sleepTick - zaciatocnyTick)) % 1000000));
+            double actualSpanie = System.nanoTime();
+            if ((TICK_DLZKA - (sleepTick - zaciatocnyTick)) / 1000000 > 0) {
+                Thread.sleep((long)((TICK_DLZKA - (sleepTick - zaciatocnyTick)) / 1000000), (int)((TICK_DLZKA - (sleepTick - zaciatocnyTick)) % 1000000));
             }
-            //double staryStaryTick = System.nanoTime();
-            //System.out.println(staryStaryTick - novyNovyTick + " pls");
-            //novyNovyTick = System.nanoTime();
+            double koniecActualSpanie = System.nanoTime();
+            System.out.println("Spanie trvalo: " + (koniecActualSpanie - actualSpanie));
+
         }
     }
 }

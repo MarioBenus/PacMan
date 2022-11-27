@@ -9,8 +9,8 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyListener;
-//import java.awt.event.MouseListener;
-//import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -40,7 +40,7 @@ public class Platno {
      */
     public static Platno dajPlatno() {
         if (Platno.platnoSingleton == null) {
-            Platno.platnoSingleton = new Platno("BlueJ Shapes Demo", 1000, 1000, 
+            Platno.platnoSingleton = new Platno("Pac-Man", 1000, 1000, 
                                          Color.black);
         }
         Platno.platnoSingleton.setVisible(true);
@@ -113,7 +113,7 @@ public class Platno {
         this.objekty.remove(objekt);   // just in case it was already there
         this.objekty.add(objekt);      // add at the end
         this.tvary.put(objekt, new PopisTvaru(tvar, farba));
-        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
+        //this.redraw(); ZMENA: redraw zmeneny aby bol spravovany cisto iba Hrou 
     }
     
     /**
@@ -124,13 +124,13 @@ public class Platno {
      */
     public void draw(Object objekt, BufferedImage image, AffineTransform transform) {
         //this.objekty.remove(objekt);   // just in case it was already there
-        if (!this.objekty.contains(objekt)) { // Zmenene, pretoze som dostaval concurrentmodificationexception MARIO
+        if (!this.objekty.contains(objekt)) { // ZMENA: Zmenene, pretoze som dostaval concurrentmodificationexception
             this.objekty.add(objekt);      // add at the end
         }
         
         
         this.tvary.put(objekt, new PopisObrazku(image, transform));
-        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
+        //this.redraw(); ZMENA: redraw zmeneny aby bol spravovany cisto iba Hrou
     }
  
     /**
@@ -140,7 +140,7 @@ public class Platno {
     public void erase(Object objekt) {
         this.objekty.remove(objekt);   // just in case it was already there
         this.tvary.remove(objekt);
-        //this.redraw(); redraw zmeneny aby bol spravovany cisto iba Hrou MARIO
+        //this.redraw(); ZMENA: redraw zmeneny aby bol spravovany cisto iba Hrou
     }
 
     /**
@@ -184,14 +184,15 @@ public class Platno {
     /**
      * * Redraw all shapes currently on the Canvas.
      */
-    public void redraw() { /////////////////////// zmenene na public MARIO ////////////////////////////////
+    public void redraw() { /////////////////////// ZMENA: redraw zmenene na public, repaint presunute do samostatnej metody ////////////////////////////////
         this.erase();
 
         for (Object tvar : this.objekty ) {
             this.tvary.get(tvar).draw(this.graphic);
         }
-        
-        
+    }
+
+    public void repaint() {
         this.canvas.repaint();
     }
        

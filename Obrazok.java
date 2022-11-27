@@ -87,7 +87,7 @@ public class Obrazok {
      * (Obrázok) Posuň sa vodorovne o dĺžku danú parametrom.
      */
     public void posunVodorovne(double vzdialenost) {
-        //this.zmaz();
+        //this.zmaz(); ZMENA: bolo to nadbytocne
         this.lavyHornyX += vzdialenost;
         this.nakresli();
     }
@@ -96,7 +96,7 @@ public class Obrazok {
      * (Obrázok) Posuň sa zvisle o dĺžku danú parametrom.
      */
     public void posunZvisle(double vzdialenost) {
-        //this.zmaz();
+        //this.zmaz(); ZMENA: bolo to nadbytocne
         this.lavyHornyY -= vzdialenost;
         this.nakresli();
     }
@@ -159,7 +159,7 @@ public class Obrazok {
      */
     public void zmenPolohu(int stredX, int stredY) {
         boolean nakresleny = this.jeViditelny;
-        //this.zmaz();
+        //this.zmaz(); ZMENA: bolo to nadbytocne
         this.lavyHornyX = stredX - this.sirka() / 2;
         this.lavyHornyY = stredY - this.vyska() / 2;
         if (nakresleny) {
@@ -172,7 +172,7 @@ public class Obrazok {
      */
     public void zmenUhol(int uhol) {
         boolean nakresleny = this.jeViditelny;
-        //this.zmaz();
+        //this.zmaz(); ZMENA: bolo to nadbytocne
         this.uhol = uhol;
         if (nakresleny) {
             this.nakresli();
@@ -221,7 +221,7 @@ public class Obrazok {
             at.translate(-this.sirka() / 2, -this.vyska() / 2);
         
             canvas.draw(this, this.obrazok, at);
-            //canvas.wait(10);
+            //canvas.wait(10); ZMENA: odstraneny nahodny 10ms wait???
         }
     }
 

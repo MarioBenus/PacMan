@@ -4,12 +4,11 @@ import java.awt.event.KeyAdapter;
 public class Hrac {
     private double rychlostPohybu;
     
-    private Direction hracSmer;
+    private Smer hracSmer;
     private Obrazok hrac;
 
     private int pocetTikov;
 
-    
     // konstruktor
     public Hrac() {
         Platno.dajPlatno().addKeyListener(new ManazerKlaves());
@@ -25,14 +24,13 @@ public class Hrac {
         this.hrac.zobraz();
         this.hrac.zmenPolohu(500, 500);
 
-        this.hracSmer = Direction.NONE;
+        this.hracSmer = Smer.ZIADNY;
 
         this.rychlostPohybu = 0.25;
 
         this.pocetTikov = 0;
 
     }
-
 
     // movement hraca podla posledneho stlaceneho smeru
     public void tick(double deltaCas) {
@@ -44,18 +42,18 @@ public class Hrac {
 
 
         this.animacia();
-        //System.out.println("posun o " + this.rychlostPohybu * deltaCas / 1000000);
+        
         switch (this.hracSmer) {
-            case UP:
+            case HORE:
                 this.hrac.posunZvisle(this.rychlostPohybu * deltaCas / 1000000);
                 break;
-            case DOWN:
+            case DOLE:
                 this.hrac.posunZvisle(-this.rychlostPohybu * deltaCas / 1000000);
                 break;
-            case LEFT:
+            case VLAVO:
                 this.hrac.posunVodorovne(-this.rychlostPohybu * deltaCas / 1000000);
                 break;
-            case RIGHT:
+            case VPRAVO:
                 this.hrac.posunVodorovne(this.rychlostPohybu * deltaCas / 1000000);
                 break;
             default:
@@ -85,13 +83,6 @@ public class Hrac {
         this.pocetTikov++;
     }
 
-    enum Direction {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        NONE
-    }
 
     
     // princip fungovania triedy ManazerKlaves je prevzaty z TvaryV3
@@ -101,23 +92,23 @@ public class Hrac {
 
             // nastavuje smer pohybu hraca na smer poslednej stlacenej sipky
             if (event.getKeyCode() == KeyEvent.VK_DOWN) {
-                Hrac.this.hracSmer = Direction.DOWN;
+                Hrac.this.hracSmer = Smer.DOLE;
                 Hrac.this.hrac.zmenUhol(180);
 
             } else if (event.getKeyCode() == KeyEvent.VK_UP) {
-                Hrac.this.hracSmer = Direction.UP;
+                Hrac.this.hracSmer = Smer.HORE;
                 Hrac.this.hrac.zmenUhol(0);
 
             } else if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-                Hrac.this.hracSmer = Direction.LEFT;
+                Hrac.this.hracSmer = Smer.VLAVO;
                 Hrac.this.hrac.zmenUhol(270);
 
             } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-                Hrac.this.hracSmer = Direction.RIGHT;
+                Hrac.this.hracSmer = Smer.VPRAVO;
                 Hrac.this.hrac.zmenUhol(90);
 
             } else if (event.getKeyCode() == KeyEvent.VK_SPACE) { // ODTIALTO NIZSIE  JE DEBUG
-                Hrac.this.hracSmer = Direction.NONE;
+                Hrac.this.hracSmer = Smer.ZIADNY;
             } else if (event.getKeyCode() == KeyEvent.VK_W) {
                 Hrac.this.hrac.posunZvisle(1);
             } else if (event.getKeyCode() == KeyEvent.VK_S) {
@@ -126,7 +117,7 @@ public class Hrac {
                 Hrac.this.hrac.posunVodorovne(-1);
             } else if (event.getKeyCode() == KeyEvent.VK_D) {
                 Hrac.this.hrac.posunVodorovne(1);
-            }
+            } 
         }
     }
 

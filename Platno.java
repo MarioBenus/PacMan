@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.Font; // ZMENA
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -132,6 +133,14 @@ public class Platno {
         this.tvary.put(objekt, new PopisObrazku(image, transform));
         //this.redraw(); ZMENA: redraw zmeneny aby bol spravovany cisto iba Hrou
     }
+
+    public void draw(Object objekt, String text, String font, int velkost, String farba, int poziciaX, int poziciaY) { // ZMENA
+        if (!this.objekty.contains(objekt)) { 
+            this.objekty.add(objekt); 
+        }
+
+        this.tvary.put(objekt, new PopisTextu(text, font, velkost, farba, poziciaX, poziciaY));
+    }
  
     /**
      * Erase a given shape's from the screen.
@@ -147,7 +156,7 @@ public class Platno {
      * Set the foreground colour of the Canvas.
      * @param  newColour   the new colour for the foreground of the Canvas 
      */
-    public void setForegroundColor(String farba) {
+    public void setForegroundColor(String farba) { // TODO: prerobit na enum
         if (farba.equals("red")) {
             this.graphic.setColor(Color.red);
         } else if (farba.equals("black")) {
@@ -245,7 +254,7 @@ public class Platno {
         private Shape tvar;
         private String farba;
 
-        public PopisTvaru(Shape tvar, String farba) {
+        private PopisTvaru(Shape tvar, String farba) {
             this.tvar = tvar;
             this.farba = farba;
         }
@@ -260,13 +269,37 @@ public class Platno {
         private BufferedImage obrazok;
         private AffineTransform transformacia;
         
-        public PopisObrazku(BufferedImage obrazok, AffineTransform transformacia) {
+        private PopisObrazku(BufferedImage obrazok, AffineTransform transformacia) {
             this.obrazok = obrazok;
             this.transformacia = transformacia;
         }
         
         public void draw(Graphics2D graphic) {
             graphic.drawImage(this.obrazok, this.transformacia, null); 
+        }
+    }
+
+    private class PopisTextu implements IPopisTvaru { // ZMENA
+        private String text;
+        private String font;
+        private int velkost;
+        private String farba;
+        private int poziciaX;
+        private int poziciaY;
+
+        private PopisTextu(String text, String font, int velkost, String farba, int poziciaX, int poziciaY) {
+            this.text = text;
+            this.font = font;
+            this.velkost = velkost;
+            this.farba = farba;
+            this.poziciaX = poziciaX;
+            this.poziciaY = poziciaY;
+        }
+
+        public void draw(Graphics2D graphic) {
+            graphic.setFont(new Font(this.font, Font.PLAIN, this.velkost));
+            Platno.this.setForegroundColor(this.farba);
+            graphic.drawString(this.text, this.poziciaX, this.poziciaY);           
         }
     }
 }

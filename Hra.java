@@ -27,6 +27,9 @@ public class Hra {
 
         double dalsiTick = System.nanoTime();
 
+        Text text = new Text("Hello World", "Arial", 50, "white", 100, 100);
+        text.zobraz();
+
 
         while (true) {
             

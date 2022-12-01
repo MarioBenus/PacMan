@@ -9,8 +9,8 @@ import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.ActionListener;
+/*import java.awt.event.MouseListener; // ZMENA: checkstyle to nemal rad
+import java.awt.event.ActionListener;*/
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.Font; // ZMENA
@@ -41,7 +41,7 @@ public class Platno {
      */
     public static Platno dajPlatno() {
         if (Platno.platnoSingleton == null) {
-            Platno.platnoSingleton = new Platno("Pac-Man", 1000, 1000, 
+            Platno.platnoSingleton = new Platno("Pac-Man", Platno.SIRKA, Platno.VYSKA, 
                                          Color.black);
         }
         Platno.platnoSingleton.setVisible(true);
@@ -58,6 +58,9 @@ public class Platno {
     private Timer timer;
     private List<Object> objekty;
     private HashMap<Object, IPopisTvaru> tvary;
+    private static final int SIRKA = 1000; // ZMENA: zmenene aby sirka a vyska platna boli atributy
+    private static final int VYSKA = 1000;
+
     
     /**
      * Create a Canvas.
@@ -80,6 +83,13 @@ public class Platno {
         this.tvary = new HashMap<Object, IPopisTvaru>();
     }
 
+    public int getSirka() { // ZMENA: getter na sirku a vysku platna
+        return Platno.SIRKA;
+    }
+    
+    public int getVyska() {
+        return Platno.VYSKA;
+    }
     /**
      * Set the canvas visibility and brings canvas to the front of screen
      * when made visible. This method can also be used to bring an already
@@ -156,7 +166,7 @@ public class Platno {
      * Set the foreground colour of the Canvas.
      * @param  newColour   the new colour for the foreground of the Canvas 
      */
-    public void setForegroundColor(String farba) { // TODO: prerobit na enum
+    public void setForegroundColor(String farba) {
         if (farba.equals("red")) {
             this.graphic.setColor(Color.red);
         } else if (farba.equals("black")) {

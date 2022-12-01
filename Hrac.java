@@ -1,18 +1,16 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
 
 public class Hrac {
-    private double rychlostPohybu;
+    private int rychlostPohybu;
     
     private Smer hracSmer;
     private Obrazok hrac;
 
     private int pocetTikov;
 
-    // konstruktor
-    public Hrac() {
-        Platno.dajPlatno().addKeyListener(new ManazerKlaves());
+    private Kolizia kolizia;
 
+    // konstruktor
+    public Hrac(Kolizia kolizia) {
         // nastavenie vlastnosti hraca
 
         /* 
@@ -22,44 +20,30 @@ public class Hrac {
 
         this.hrac = new Obrazok("Obrazky\\pacman-2.png");
         this.hrac.zobraz();
-        this.hrac.zmenPolohu(500, 500);
+        this.hrac.zmenPolohu(500, -500);
 
         this.hracSmer = Smer.ZIADNY;
 
-        this.rychlostPohybu = 0.25;
+        this.rychlostPohybu = 4;
 
         this.pocetTikov = 0;
+
+        this.kolizia = kolizia;
 
     }
 
     // movement hraca podla posledneho stlaceneho smeru
-    public void tick(double deltaCas) {
-        if (this.hrac.getSuradnice()[0] > 834) {
-            this.hrac.posunVodorovne(-728);
-        } else if (this.hrac.getSuradnice()[0] < 106) {
-            this.hrac.posunVodorovne(728);
-        }
+    public void tick() {
 
 
         this.animacia();
         
-        switch (this.hracSmer) {
-            case HORE:
-                this.hrac.posunZvisle(this.rychlostPohybu * deltaCas / 1000000);
-                break;
-            case DOLE:
-                this.hrac.posunZvisle(-this.rychlostPohybu * deltaCas / 1000000);
-                break;
-            case VLAVO:
-                this.hrac.posunVodorovne(-this.rychlostPohybu * deltaCas / 1000000);
-                break;
-            case VPRAVO:
-                this.hrac.posunVodorovne(this.rychlostPohybu * deltaCas / 1000000);
-                break;
-            default:
-                break;
-        }
+        this.hrac.posunVodorovne(this.rychlostPohybu * this.hracSmer.getNasobicX());
+        this.hrac.posunZvisle(this.rychlostPohybu * this.hracSmer.getNasobicY());
+        this.hrac.zmenUhol(this.hracSmer.getUhol());
+
     }
+
 
     private void animacia() {
         switch (this.pocetTikov) {
@@ -83,10 +67,29 @@ public class Hrac {
         this.pocetTikov++;
     }
 
+    public void zmenSmer(Smer smer) {
+        this.hracSmer = smer;
+    }
 
+    public int getX() {
+        return this.hrac.getLavyDolnyX();
+    }
+    
+    public int getY() {
+        return this.hrac.getLavyDolnyY();
+    }
+
+    public void posunVodorovne(int vzdialenost) {
+        this.hrac.posunVodorovne(vzdialenost);
+    }
+    
+    public void posunZvisle(int vzdialenost) {
+        this.hrac.posunZvisle(vzdialenost);
+    }
+    
     
     // princip fungovania triedy ManazerKlaves je prevzaty z TvaryV3
-    private class ManazerKlaves extends KeyAdapter {
+    /*private class ManazerKlaves extends KeyAdapter {
 
         public void keyPressed(KeyEvent event) {
 
@@ -119,7 +122,7 @@ public class Hrac {
                 Hrac.this.hrac.posunVodorovne(1);
             } 
         }
-    }
+    }*/
 
 
     

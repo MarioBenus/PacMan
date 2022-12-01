@@ -15,8 +15,8 @@ import java.awt.geom.AffineTransform;
 public class Obrazok {
     private boolean jeViditelny;
     
-    private double lavyHornyX;
-    private double lavyHornyY;
+    private int lavyHornyX;
+    private int lavyHornyY;
     private int uhol;
     
     private BufferedImage obrazok;
@@ -34,6 +34,14 @@ public class Obrazok {
         this.lavyHornyY = 100; 
         this.uhol = 0;         
     }
+
+    public int getLavyDolnyX() { // ZMENA: getter pre lavy dolny x a y
+        return this.lavyHornyX;
+    }
+
+    public int getLavyDolnyY() {
+        return this.lavyHornyY;
+    }
     
     /**
      * (Obrázok) Zobraz sa.
@@ -41,10 +49,6 @@ public class Obrazok {
     public void zobraz() {      
         this.jeViditelny = true;
         this.nakresli();
-    }
-
-    public double[] getSuradnice() {
-        return new double[] {this.lavyHornyX, this.lavyHornyY};
     }
     
     /**
@@ -86,7 +90,7 @@ public class Obrazok {
     /**
      * (Obrázok) Posuň sa vodorovne o dĺžku danú parametrom.
      */
-    public void posunVodorovne(double vzdialenost) {
+    public void posunVodorovne(int vzdialenost) {
         //this.zmaz(); ZMENA: bolo to nadbytocne
         this.lavyHornyX += vzdialenost;
         this.nakresli();
@@ -95,9 +99,9 @@ public class Obrazok {
     /**
      * (Obrázok) Posuň sa zvisle o dĺžku danú parametrom.
      */
-    public void posunZvisle(double vzdialenost) {
+    public void posunZvisle(int vzdialenost) {
         //this.zmaz(); ZMENA: bolo to nadbytocne
-        this.lavyHornyY -= vzdialenost;
+        this.lavyHornyY += vzdialenost;
         this.nakresli();
     }
 
@@ -197,14 +201,14 @@ public class Obrazok {
     /*
      * (Obrázok) Vráti všírku obrázka.
      */
-    private int sirka() {
+    private int sirka() { 
         return this.obrazok.getWidth();
     }
     
     /*
      * (Obrázok) Vráti výšku obrázka.
      */
-    private int vyska() {
+    private int vyska() { 
         return this.obrazok.getHeight();
     }    
     
@@ -216,9 +220,10 @@ public class Obrazok {
             Platno canvas = Platno.dajPlatno();
         
             AffineTransform at = new AffineTransform();
-            at.translate(this.lavyHornyX + this.sirka() / 2, this.lavyHornyY + this.vyska() / 2);
+            at.translate(this.lavyHornyX + this.sirka() / 2, -(this.lavyHornyY + this.vyska() / 2)); // ZMENA: pridane minus aby +y išlo hore a -y dole
             at.rotate(this.uhol / 180.0 * Math.PI);
             at.translate(-this.sirka() / 2, -this.vyska() / 2);
+            
         
             canvas.draw(this, this.obrazok, at);
             //canvas.wait(10); ZMENA: odstraneny nahodny 10ms wait???

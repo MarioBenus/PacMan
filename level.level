@@ -1,0 +1,45 @@
+// syntax: x,y lave dolne; sirka, vyska // popis steny
+42 		// pocet stien
+0 0 715 14 	// spodna stena
+0 0 14 397 	// lava dolna stena
+702 0 13 397 	// prava dolna stena 
+0 294 141 103 	// lava dolna hruba stena
+574 294 141 103 // prava dolna hruba stena
+0 447 141 103 	// lava horna hruba stena
+574 447 141 103 // prava horna hruba stena
+0 447 14 345 	// lava horna stena
+702 447 13 345 	// prava horna stena
+0 778 715 14 	// horna stena
+64 64 231 27 	// horizontalna strana laveho dolneho T
+421 64 231 27 	// horizontalna strana praveho dolneho T
+191 64 27 103 	// vertikalna strana laveho dolneho T
+345 64 26 103 	// vertikalna strana stredneho dolneho T
+497 64 27 103 	// vertikalna strana praveho dolneho T
+0 141 65 26 	// horizontalny vytrzok z lavej steny
+268 141 179 26 	// horizontalna strana stredneho dolneho T
+651 141 65 27 	// horizontalny vytrzok z pravej steny
+115 141 26 103 	// vertikalna strana laveho dolneho L
+574 141 27 103 	// vertikalna strana praveho dolneho L
+64 217 77 27 	// horizontalna strana laveho dolneho L
+191 217 104 27 	// lava dolna horizontalna stena
+421 217 103 27 	// prava dolna horizontalna stena
+574 217 78 27	// horizontalna strana praveho dolneho L
+345 217 26 103 	// vertikalna strana stredneho T
+268 294 179 26 	// horizontalna strana stredneho T
+191 294 27 103 	// lava vertikalna stena
+497 294 27 103 	// prava vertikalna stena /////////////// STRED //////////////////////
+191 447 27 179 	// vertikalna stena horneho laveho T
+497 447 27 179 	// vertikalna stena horneho praveho T
+191 523 104 27 	// horizontalna stena horneho laveho T
+421 523 103 27 	// horizontalna stena horneho praveho T
+345 523 26 103 	// vertikalna stena horneho stredneho T
+268 600 179 26 	// horizontalna stena horneho stredneho T
+64 600 77 26 	// lava horna tenka stena
+574 600 78 26 	// prava horna tenka stena
+64 676 77 52 	// horna lava stena
+191 676 104 52 	// horna stredna lava stena
+345 676 26 116 	// horny vytrzok zo steny
+421 676 103 52 	// horna stredna prava stena
+574 676 78 52 	// horna prava stena
+268 370 179 103 // box pre duchov
+

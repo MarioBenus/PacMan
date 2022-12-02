@@ -17,7 +17,7 @@
 497 64 27 103 	// vertikalna strana praveho dolneho T
 0 141 65 26 	// horizontalny vytrzok z lavej steny
 268 141 179 26 	// horizontalna strana stredneho dolneho T
-651 141 65 27 	// horizontalny vytrzok z pravej steny
+651 141 65 26 	// horizontalny vytrzok z pravej steny
 115 141 26 103 	// vertikalna strana laveho dolneho L
 574 141 27 103 	// vertikalna strana praveho dolneho L
 64 217 77 27 	// horizontalna strana laveho dolneho L

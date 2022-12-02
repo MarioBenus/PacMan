@@ -26,19 +26,13 @@ public class Hra {
         this.pozadie.zobraz();
         this.nacitajLevel();
         this.kolizia = new Kolizia(this.steny);
-        this.hrac = new Hrac(this.kolizia);
+        this.hrac = new Hrac();
         this.manazerHraca = new ManazerHraca(this.hrac, this.kolizia);
 
         double dalsiTick = System.nanoTime();
 
         /*Text text = new Text("Hello World", "Arial", 50, "white", 100, 100);
         text.zobraz();*/
-
-
-        
-
-
-        
 
 
         while (true) {
@@ -56,12 +50,7 @@ public class Hra {
             
             Platno.dajPlatno().repaint();
 
-            
-
-
-
         }
-
          
     }
 

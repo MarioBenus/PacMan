@@ -7,10 +7,9 @@ public class Hrac {
 
     private int pocetTikov;
 
-    private Kolizia kolizia;
 
     // konstruktor
-    public Hrac(Kolizia kolizia) {
+    public Hrac() {
         // nastavenie vlastnosti hraca
 
         /* 
@@ -27,9 +26,6 @@ public class Hrac {
         this.rychlostPohybu = 4;
 
         this.pocetTikov = 0;
-
-        this.kolizia = kolizia;
-
     }
 
     // movement hraca podla posledneho stlaceneho smeru
@@ -67,8 +63,12 @@ public class Hrac {
         this.pocetTikov++;
     }
 
-    public void zmenSmer(Smer smer) {
+    public void setSmer(Smer smer) {
         this.hracSmer = smer;
+    }
+
+    public Smer getSmer() {
+        return this.hracSmer;
     }
 
     public int getX() {
@@ -79,6 +79,10 @@ public class Hrac {
         return this.hrac.getLavyDolnyY();
     }
 
+    public int getRychlostPohybu() {
+        return this.rychlostPohybu;
+    }
+
     public void posunVodorovne(int vzdialenost) {
         this.hrac.posunVodorovne(vzdialenost);
     }
@@ -86,44 +90,5 @@ public class Hrac {
     public void posunZvisle(int vzdialenost) {
         this.hrac.posunZvisle(vzdialenost);
     }
-    
-    
-    // princip fungovania triedy ManazerKlaves je prevzaty z TvaryV3
-    /*private class ManazerKlaves extends KeyAdapter {
-
-        public void keyPressed(KeyEvent event) {
-
-            // nastavuje smer pohybu hraca na smer poslednej stlacenej sipky
-            if (event.getKeyCode() == KeyEvent.VK_DOWN) {
-                Hrac.this.hracSmer = Smer.DOLE;
-                Hrac.this.hrac.zmenUhol(180);
-
-            } else if (event.getKeyCode() == KeyEvent.VK_UP) {
-                Hrac.this.hracSmer = Smer.HORE;
-                Hrac.this.hrac.zmenUhol(0);
-
-            } else if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-                Hrac.this.hracSmer = Smer.VLAVO;
-                Hrac.this.hrac.zmenUhol(270);
-
-            } else if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-                Hrac.this.hracSmer = Smer.VPRAVO;
-                Hrac.this.hrac.zmenUhol(90);
-
-            } else if (event.getKeyCode() == KeyEvent.VK_SPACE) { // ODTIALTO NIZSIE  JE DEBUG
-                Hrac.this.hracSmer = Smer.ZIADNY;
-            } else if (event.getKeyCode() == KeyEvent.VK_W) {
-                Hrac.this.hrac.posunZvisle(1);
-            } else if (event.getKeyCode() == KeyEvent.VK_S) {
-                Hrac.this.hrac.posunZvisle(-1);
-            } else if (event.getKeyCode() == KeyEvent.VK_A) {
-                Hrac.this.hrac.posunVodorovne(-1);
-            } else if (event.getKeyCode() == KeyEvent.VK_D) {
-                Hrac.this.hrac.posunVodorovne(1);
-            } 
-        }
-    }*/
-
-
     
 }

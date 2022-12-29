@@ -203,7 +203,7 @@ public class Platno {
     /**
      * * Redraw all shapes currently on the Canvas.
      */
-    public void redraw() { /////////////////////// ZMENA: redraw zmenene na public, repaint presunute do samostatnej metody ////////////////////////////////
+    public void redraw() { // ZMENA: redraw zmenene na public, repaint presunute do samostatnej metody
         this.erase();
 
         for (Object tvar : this.objekty ) {
@@ -211,6 +211,8 @@ public class Platno {
         }
     }
 
+    // ZMENA: repaint je samostatna metoda pretoze redraw trva relativne dlho a chcel som mat co
+    //        najpravidelnejsie vykreslovanie aby to vyzeralo co najviac plynulo 
     public void repaint() {
         this.canvas.repaint();
     }
@@ -230,7 +232,7 @@ public class Platno {
         this.frame.addKeyListener(listener);
     }
     
-    /*public void addMouseListener(MouseListener listener) {
+    /*public void addMouseListener(MouseListener listener) { 
         this.canvas.addMouseListener(listener);
     }
     
@@ -289,7 +291,8 @@ public class Platno {
         }
     }
 
-    private class PopisTextu implements IPopisTvaru { // ZMENA
+    // ZMENA: pridanie vykreslovania textu
+    private class PopisTextu implements IPopisTvaru { 
         private String text;
         private String font;
         private int velkost;

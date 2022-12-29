@@ -15,8 +15,8 @@ import java.awt.geom.AffineTransform;
 public class Obrazok {
     private boolean jeViditelny;
     
-    private int lavyHornyX;
-    private int lavyHornyY;
+    private int lavyDolnyX; // ZMENA: zmenene z lavy horny na lavy dolny, pretoze sa mi s tym pracuje pesie
+    private int lavyDolnyY;
     private int uhol;
     
     private BufferedImage obrazok;
@@ -30,18 +30,19 @@ public class Obrazok {
         this.obrazok = this.nacitajObrazokZoSuboru(suborSObrazkom);                                   
  
         this.jeViditelny = false;
-        this.lavyHornyX = 100;
-        this.lavyHornyY = 100; 
+        this.lavyDolnyX = 100;
+        this.lavyDolnyY = 100; 
         this.uhol = 0;         
     }
 
     public int getLavyDolnyX() { // ZMENA: getter pre lavy dolny x a y
-        return this.lavyHornyX;
+        return this.lavyDolnyX;
     }
 
     public int getLavyDolnyY() {
-        return this.lavyHornyY;
+        return this.lavyDolnyY;
     }
+
     
     /**
      * (Obrázok) Zobraz sa.
@@ -92,7 +93,7 @@ public class Obrazok {
      */
     public void posunVodorovne(int vzdialenost) {
         //this.zmaz(); ZMENA: bolo to nadbytocne
-        this.lavyHornyX += vzdialenost;
+        this.lavyDolnyX += vzdialenost;
         this.nakresli();
     }
 
@@ -101,7 +102,7 @@ public class Obrazok {
      */
     public void posunZvisle(int vzdialenost) {
         //this.zmaz(); ZMENA: bolo to nadbytocne
-        this.lavyHornyY += vzdialenost;
+        this.lavyDolnyY += vzdialenost;
         this.nakresli();
     }
 
@@ -119,7 +120,7 @@ public class Obrazok {
         }
 
         for (int i = 0; i < vzdialenost; i++) {
-            this.lavyHornyX += delta;
+            this.lavyDolnyX += delta;
             this.nakresli();
         }
     }
@@ -138,7 +139,7 @@ public class Obrazok {
         }
 
         for (int i = 0; i < vzdialenost; i++) {
-            this.lavyHornyY += delta;
+            this.lavyDolnyY += delta;
             this.nakresli();
         }
     }
@@ -164,8 +165,8 @@ public class Obrazok {
     public void zmenPolohu(int stredX, int stredY) {
         boolean nakresleny = this.jeViditelny;
         //this.zmaz(); ZMENA: bolo to nadbytocne
-        this.lavyHornyX = stredX - this.sirka() / 2;
-        this.lavyHornyY = stredY - this.vyska() / 2;
+        this.lavyDolnyX = stredX - this.sirka() / 2;
+        this.lavyDolnyY = stredY - this.vyska() / 2;
         if (nakresleny) {
             this.nakresli();
         }
@@ -201,14 +202,14 @@ public class Obrazok {
     /*
      * (Obrázok) Vráti všírku obrázka.
      */
-    private int sirka() { 
+    public int sirka() { // ZMENA: zmenene na public
         return this.obrazok.getWidth();
     }
     
     /*
      * (Obrázok) Vráti výšku obrázka.
      */
-    private int vyska() { 
+    public int vyska() { // ZMENA: zmenene na public
         return this.obrazok.getHeight();
     }    
     
@@ -220,7 +221,7 @@ public class Obrazok {
             Platno canvas = Platno.dajPlatno();
         
             AffineTransform at = new AffineTransform();
-            at.translate(this.lavyHornyX + this.sirka() / 2, -(this.lavyHornyY + this.vyska() / 2)); // ZMENA: pridane minus aby +y išlo hore a -y dole
+            at.translate(this.lavyDolnyX + this.sirka() / 2, -(this.lavyDolnyY + this.vyska() / 2)); // ZMENA: pridane minus aby +y išlo hore a -y dole
             at.rotate(this.uhol / 180.0 * Math.PI);
             at.translate(-this.sirka() / 2, -this.vyska() / 2);
             

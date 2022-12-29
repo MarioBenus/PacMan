@@ -1,6 +1,7 @@
 
+// postava, ktoru hrac ovlada
 public class Hrac {
-    private int rychlostPohybu;
+    private final int rychlostPohybu;
     
     private Smer hracSmer;
     private Obrazok hrac;
@@ -8,18 +9,10 @@ public class Hrac {
     private int pocetTikov;
 
 
-    // konstruktor
     public Hrac() {
-        // nastavenie vlastnosti hraca
-
-        /* 
-         * rychlost pohybu je upravena podla dlzky ticku,
-         * aby rychlost zostala rovnaka aj ked sa dlzka ticku zmeni
-         */
-
-        this.hrac = new Obrazok("Obrazky\\pacman-2.png");
+        this.hrac = new Obrazok("Obrazky\\player-2.png");
         this.hrac.zobraz();
-        this.hrac.zmenPolohu(500, -500);
+        this.hrac.zmenPolohu(500, -700);
 
         this.hracSmer = Smer.ZIADNY;
 
@@ -44,16 +37,16 @@ public class Hrac {
     private void animacia() {
         switch (this.pocetTikov) {
             case 0:
-                this.hrac.zmenObrazok("Obrazky\\pacman-1.png");
+                this.hrac.zmenObrazok("Obrazky\\player-1.png");
                 break;
             case 5:
-                this.hrac.zmenObrazok("Obrazky\\pacman-2.png");
+                this.hrac.zmenObrazok("Obrazky\\player-2.png");
                 break;
             case 10:
-                this.hrac.zmenObrazok("Obrazky\\pacman-3.png");
+                this.hrac.zmenObrazok("Obrazky\\player-3.png");
                 break;
             case 15:
-                this.hrac.zmenObrazok("Obrazky\\pacman-2.png");
+                this.hrac.zmenObrazok("Obrazky\\player-2.png");
                 break;
             case 19:
                 this.pocetTikov = -1;

@@ -1,10 +1,5 @@
 
-/**
- * Enumeration class Smer - write a description of the enum class here
- * 
- * @author (your name here)
- * @version (version number or date here)
- */
+// smer pohybu hraca alebo ducha
 public enum Smer {
     HORE(0, 1, 0),
     DOLE(0, -1, 180),
@@ -12,8 +7,12 @@ public enum Smer {
     VLAVO(-1, 0, 270),
     ZIADNY(0, 0, 0);
 
+    // nasobic urcuje smer pohybu, pri pohybe hraca a duchov sa vzdialenost posunutia
+    // nasobi tymito nasobicmi
     private final int nasobicX;
     private final int nasobicY;
+
+    // uhol na ktory sa musi nastavit hrac pri tomto smere
     private final int uhol;
 
     Smer(int nasobicX, int nasobicY, int uhol)  {

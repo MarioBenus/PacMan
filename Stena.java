@@ -1,4 +1,5 @@
 
+// hitboxy stien
 public class Stena {
     private final int lavyDolnyX;
     private final int lavyDolnyY;
@@ -10,11 +11,6 @@ public class Stena {
         this.lavyDolnyY = lavyDolnyY;
         this.sirka = sirka;
         this.vyska = vyska;
-
-        /*Obdlznik obdlznik = new Obdlznik();
-        obdlznik.nastavSuradnice(this.LAVY_DOLNY_X, this.LAVY_DOLNY_Y + this.VYSKA);
-        obdlznik.zmenStrany(this.SIRKA, this.VYSKA);
-        obdlznik.zobraz();*/
     }
 
     public int getLavyDolnyX() {

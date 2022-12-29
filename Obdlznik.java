@@ -168,9 +168,10 @@ public class Obdlznik {
     private void nakresli() {
         if (this.jeViditelny) {
             Platno canvas = Platno.dajPlatno();
+            // ZMENA: pridanie minus aby +y bolo hore a -y dole pretoze sa mi s tym robi lepsie
             canvas.draw(this, this.farba,
-                        new Rectangle(this.lavyHornyX, -this.lavyHornyY, this.stranaA, this.stranaB));
-            //canvas.wait(10);
+                        new Rectangle(this.lavyHornyX, -(this.lavyHornyY + this.stranaB), this.stranaA, this.stranaB));
+            //canvas.wait(10); // ZMENA: odstraneny uplne zbytocny wait
         }
     }
 

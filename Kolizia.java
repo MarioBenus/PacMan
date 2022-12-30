@@ -3,15 +3,16 @@
 public class Kolizia {
     private Stena[] steny;
     private Bodka[][] bodky;
+    int pocetZostavajucichBodiek;
 
     private final int velkostHraca = 50;
+    private final int celkovyPocetBodiek = 240;
 
     private Obrazok pozadie;
 
-    public Kolizia(Stena[] steny, Obrazok pozadie, Bodka[][] bodky) {
-        this.bodky = bodky;
-        this.steny = steny;
+    public Kolizia(Obrazok pozadie) {
         this.pozadie = pozadie;
+        this.pocetZostavajucichBodiek = this.celkovyPocetBodiek;
     }
 
     // vrati vzdialenost o ktoru sa hrac musi vratit aby bol mimo steny
@@ -110,7 +111,6 @@ public class Kolizia {
         return true;
 
         /*
-        // TODO: duplicitne s checkKoliziaStena
         for (Stena stena : this.steny) {
             if (testovanyHitboxPravyHornyY > stena.getLavyDolnyY() && testovanyHitboxLavyDolnyY < stena.getPravyHornyY() &&
                 testovanyHitboxPravyHornyX > stena.getLavyDolnyX() && testovanyHitboxLavyDolnyX < stena.getPravyHornyX()) {
@@ -136,7 +136,7 @@ public class Kolizia {
         if (prvyObjektPravyHornyY > druhyObjektLavyDolnyY && prvyObjektLavyDolnyY < druhyObjektPravyHornyY &&
             prvyObjektPravyHornyX > druhyObjektLavyDolnyX && prvyObjektLavyDolnyX < druhyObjektPravyHornyX) {
                     
-            // return ako moc je prvy objekt v druhom objekte
+            // return ako hlboko je prvy objekt v druhom objekte
             switch (smer) {
                 case VPRAVO:
                     return druhyObjektLavyDolnyX - prvyObjektPravyHornyX;
@@ -153,6 +153,38 @@ public class Kolizia {
 
         return 0;
 
+    }
+
+    // TODO: tbh by sa hodil lepsi nazov
+    public void checkBodka(int hracLavyDolnyX, int hracLavyDolnyY) {
+        hracLavyDolnyX -= pozadie.getLavyDolnyX() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
+        hracLavyDolnyY -= pozadie.getLavyDolnyY() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
+
+        int suradnicaHracaX = (int)((double)hracLavyDolnyX / Bodka.VZDIALENOST_MEDZI_BODKAMI);
+        int suradnicaHracaY = (int)((double)hracLavyDolnyY / Bodka.VZDIALENOST_MEDZI_BODKAMI);
+
+        if (this.bodky[suradnicaHracaY][suradnicaHracaX] != null) {
+            //System.out.println("zobrata bodka");
+            this.bodky[suradnicaHracaY][suradnicaHracaX].skryBodku();
+            this.bodky[suradnicaHracaY][suradnicaHracaX] = null;
+            this.pocetZostavajucichBodiek--;
+        }
+
+
+    }
+
+    public int getPocetZostavajucichBodiek() {
+        return this.pocetZostavajucichBodiek;
+    }
+
+    // TODO: zufalo potrebuje lepsi nazov
+    public void reloadBodky(Bodka[][] bodky) {
+        this.bodky = bodky;
+        this.pocetZostavajucichBodiek = this.celkovyPocetBodiek;
+    }
+
+    public void nastavSteny(Stena[] steny) {
+        this.steny = steny;
     }
 
 

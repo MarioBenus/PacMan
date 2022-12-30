@@ -36,10 +36,13 @@ public class ManazerHraca extends KeyAdapter {
             this.hrac.setSmer(this.pozadovanySmer);
 
         }
+
+        this.kolizia.checkBodka(this.hrac.getX(), this.hrac.getY());
         
     }
 
     // udrziavanie hraca mimo stien -- ked sa hrac dostane do steny, tak ho to posunie z nej von
+    // TODO: omg tento nazov
     public void korekcia() {
         int korekcia = this.kolizia.checkKoliziaStena(this.hrac.getX(), this.hrac.getY(), this.hrac.getSmer());
         if (this.hrac.getSmer() == Smer.VPRAVO || this.hrac.getSmer() == Smer.VLAVO) {

@@ -5,6 +5,7 @@ public class Bodka {
     private int lavyDolnyY;
 
     public static final int VELKOST = 7;
+    public static final double VZDIALENOST_MEDZI_BODKAMI = 25.5;
 
     private Obdlznik stvorec;
     
@@ -17,6 +18,10 @@ public class Bodka {
         this.stvorec.zmenStrany(VELKOST, VELKOST);
         this.stvorec.zmenFarbu("white");
         this.stvorec.zobraz();
+    }
+
+    public void skryBodku() {
+        this.stvorec.skry();
     }
 
 }

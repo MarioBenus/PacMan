@@ -17,16 +17,14 @@ public class Hra {
     // 
     private Bodka[][] bodky;
 
-    private final double velkostMedziBodkami = 25.5;
-
     
     public Hra() throws IOException, InterruptedException {
         this.bodky = new Bodka[29][26]; 
         this.pozadie = new Obrazok("Obrazky\\level.png");
         this.pozadie.zmenPolohu(Platno.dajPlatno().getSirka() / 2, -Platno.dajPlatno().getVyska() / 2); // posun do stredu
         this.pozadie.zobraz();
+        this.kolizia = new Kolizia(this.pozadie);
         this.nacitajLevel();
-        this.kolizia = new Kolizia(this.steny, this.pozadie, this.bodky);
         this.hrac = new Hrac();
         this.manazerHraca = new ManazerHraca(this.hrac, this.kolizia);
 
@@ -42,6 +40,11 @@ public class Hra {
             this.hrac.tick();
             this.manazerHraca.tick(); // ManazerHraca sa musi vykonavat az za Hracom
             Platno.dajPlatno().redraw();
+
+            if (this.kolizia.getPocetZostavajucichBodiek() == 0) {
+                // TODO: dalsi level
+                this.nacitajBodky();
+            }
 
             dalsiTick += TICK_DLZKA;
 
@@ -72,6 +75,8 @@ public class Hra {
         }
         scanner.close();
 
+        this.kolizia.nastavSteny(this.steny);
+
         this.nacitajBodky();
 
         
@@ -90,7 +95,9 @@ public class Hra {
         while (scanner.hasNextLine()) {
             double riadok = scanner.nextInt();
             double stlpec = scanner.nextInt();
-            this.bodky[(int)riadok][(int)stlpec] = new Bodka((int)(offsetX + stlpec * this.velkostMedziBodkami), (int)(offsetY + riadok * this.velkostMedziBodkami));
+            this.bodky[(int)riadok][(int)stlpec] = new Bodka((int)(offsetX + stlpec * Bodka.VZDIALENOST_MEDZI_BODKAMI), (int)(offsetY + riadok * Bodka.VZDIALENOST_MEDZI_BODKAMI));
         }
+
+        this.kolizia.reloadBodky(this.bodky);
     }
 }

@@ -43,6 +43,10 @@ public class Obdlznik {
         this.jeViditelny = false;
     }
 
+    public boolean jeViditelny() {
+        return this.jeViditelny;
+    }
+
     public void nastavSuradnice(int x, int y) {
         this.lavyHornyX = x;
         this.lavyHornyY = y;

@@ -22,22 +22,23 @@ public class ManazerHraca extends KeyAdapter {
         this.korekcia();
 
         this.pozadovanySmer = this.tempSmer;
-        if (this.kolizia.checkVolnySmer(this.hrac.getX(), this.hrac.getY(), this.pozadovanySmer) &&
-            this.pozadovanySmer != this.hrac.getSmer()) {
+        if (this.pozadovanySmer != this.hrac.getSmer()) { // tieto 2 if-y su samostatne aby sa zbytocne nekontrolovala kolizia ked nemusi
+            if (this.kolizia.checkVolnySmer(this.hrac.getX(), this.hrac.getY(), this.pozadovanySmer)) {
 
-            // posun hraca do volneho smeru
-            this.hrac.posunVodorovne(this.hrac.getRychlostPohybu() * this.pozadovanySmer.getNasobicX());
-            this.hrac.posunZvisle(this.hrac.getRychlostPohybu() * this.pozadovanySmer.getNasobicY());     
-            // hrac musi byt posunuty este trochu do stareho smeru, aby korekcia nastala vzhladom na spravnu stenu 
-            this.hrac.posunVodorovne(this.hrac.getRychlostPohybu() * this.hrac.getSmer().getNasobicX());
-            this.hrac.posunZvisle(this.hrac.getRychlostPohybu() * this.hrac.getSmer().getNasobicY());
-            this.korekcia();
-
-            this.hrac.setSmer(this.pozadovanySmer);
-
+                // posun hraca do volneho smeru
+                this.hrac.posunVodorovne(this.hrac.getRychlostPohybu() * this.pozadovanySmer.getNasobicX());
+                this.hrac.posunZvisle(this.hrac.getRychlostPohybu() * this.pozadovanySmer.getNasobicY());     
+                // hrac musi byt posunuty este trochu do stareho smeru, aby korekcia nastala vzhladom na spravnu stenu 
+                this.hrac.posunVodorovne(this.hrac.getRychlostPohybu() * this.hrac.getSmer().getNasobicX());
+                this.hrac.posunZvisle(this.hrac.getRychlostPohybu() * this.hrac.getSmer().getNasobicY());
+                this.korekcia();
+    
+                this.hrac.setSmer(this.pozadovanySmer);    
+            }
         }
+        
 
-        this.kolizia.checkBodka(this.hrac.getX(), this.hrac.getY());
+        this.kolizia.zjedzBodku(this.hrac.getX(), this.hrac.getY());
         
     }
 

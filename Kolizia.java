@@ -1,18 +1,30 @@
+import java.util.Scanner;
+import java.io.IOException;
+import java.io.File;
 
 // kontroluje koliziu medzi objektmi
 public class Kolizia {
     private Stena[] steny;
     private Bodka[][] bodky;
-    int pocetZostavajucichBodiek;
+    private Bodka[] velkeBodky;
+    private int pocetZostavajucichBodiek;
 
     private final int velkostHraca = 50;
-    private final int celkovyPocetBodiek = 240;
+    private final int pocetMalychBodiek = 240;
+    private final int pocetVelkychBodiek = 4;
+
+    private int pocetTikov;
 
     private Obrazok pozadie;
 
-    public Kolizia(Obrazok pozadie) {
+    public Kolizia(Obrazok pozadie) throws IOException {
+        this.pocetTikov = 0;
         this.pozadie = pozadie;
-        this.pocetZostavajucichBodiek = this.celkovyPocetBodiek;
+        this.pocetZostavajucichBodiek = this.pocetMalychBodiek + this.pocetVelkychBodiek;
+        this.bodky = new Bodka[29][26];
+        this.velkeBodky = new Bodka[4];
+        this.nacitajBodky();
+        this.nacitajLevel();
     }
 
     // vrati vzdialenost o ktoru sa hrac musi vratit aby bol mimo steny
@@ -41,25 +53,6 @@ public class Kolizia {
                 return vysledok;
             }
 
-            
-            /*// test ci je hrac vnutri steny
-            if (hracPravyHornyY > stena.getLavyDolnyY() && hracLavyDolnyY < stena.getPravyHornyY() &&
-                hracPravyHornyX > stena.getLavyDolnyX() && hracLavyDolnyX < stena.getPravyHornyX()) {
-                    
-                // return o kolko sa ma hrac posunut naspat
-                switch (smer) {
-                    case VPRAVO:
-                        return stena.getLavyDolnyX() - hracPravyHornyX;
-                    case VLAVO:
-                        return stena.getPravyHornyX() - hracLavyDolnyX;
-                    case HORE:
-                        return stena.getLavyDolnyY() - hracPravyHornyY;
-                    case DOLE:
-                        return stena.getPravyHornyY() - hracLavyDolnyY;
-                    default:
-                        return 0;
-                }
-            }*/
         }
 
         return 0;
@@ -155,19 +148,23 @@ public class Kolizia {
 
     }
 
-    // TODO: tbh by sa hodil lepsi nazov
-    public void checkBodka(int hracLavyDolnyX, int hracLavyDolnyY) {
-        hracLavyDolnyX -= pozadie.getLavyDolnyX() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
-        hracLavyDolnyY -= pozadie.getLavyDolnyY() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
+    public void zjedzBodku(int hracLavyDolnyX, int hracLavyDolnyY) {
+        hracLavyDolnyX -= this.pozadie.getLavyDolnyX() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
+        hracLavyDolnyY -= this.pozadie.getLavyDolnyY() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
 
         int suradnicaHracaX = (int)((double)hracLavyDolnyX / Bodka.VZDIALENOST_MEDZI_BODKAMI);
         int suradnicaHracaY = (int)((double)hracLavyDolnyY / Bodka.VZDIALENOST_MEDZI_BODKAMI);
 
+        // nastava v pripade prechodu cez warp tunnel
+        if (suradnicaHracaX < 0 || suradnicaHracaX > 25) {
+            return;
+        }
+
         if (this.bodky[suradnicaHracaY][suradnicaHracaX] != null) {
-            //System.out.println("zobrata bodka");
-            this.bodky[suradnicaHracaY][suradnicaHracaX].skryBodku();
-            this.bodky[suradnicaHracaY][suradnicaHracaX] = null;
-            this.pocetZostavajucichBodiek--;
+            if (!this.bodky[suradnicaHracaY][suradnicaHracaX].jeZjedena()) {
+                this.bodky[suradnicaHracaY][suradnicaHracaX].zjedz();
+                this.pocetZostavajucichBodiek--;
+            }
         }
 
 
@@ -178,14 +175,81 @@ public class Kolizia {
     }
 
     // TODO: zufalo potrebuje lepsi nazov
-    public void reloadBodky(Bodka[][] bodky) {
-        this.bodky = bodky;
-        this.pocetZostavajucichBodiek = this.celkovyPocetBodiek;
+    public void reloadBodky() {
+        for (Bodka[] bodky2 : this.bodky) {
+            for (Bodka bodka : bodky2) {
+                if (bodka != null) {
+                    bodka.obnov();
+                }
+            }
+        }
+        this.pocetZostavajucichBodiek = this.pocetMalychBodiek;
     }
 
-    public void nastavSteny(Stena[] steny) {
-        this.steny = steny;
+    public void nacitajLevel() throws IOException {
+        int offsetX = this.pozadie.getLavyDolnyX();
+        int offsetY = this.pozadie.getLavyDolnyY();
+
+        // nacitavanie pozicii a velkosti stien zo suboru level.level
+        // suradnice v tomto subore su relativne k lavemu dolnemu rohu pozadia
+        Scanner scanner = new Scanner(new File("level.level"));
+        scanner.nextLine(); // prvy riadok v level.level je len vysvetlenie syntaxe
+        this.steny = new Stena[scanner.nextInt()];
+        scanner.nextLine();
+        for (int i = 0; i < this.steny.length; i++) {
+            this.steny[i] = new Stena(offsetX + scanner.nextInt(), offsetY + scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
+            scanner.nextLine();
+        }
+        scanner.close();   
     }
 
+    public void nacitajBodky() throws IOException {
+        
+        Scanner scanner = new Scanner(new File("bodky.level"));
 
+        // oznacuje x a y suradnice bodky v 0-tom riadku a 0-tom stlpci
+        // 39 = sirka krajnej steny + polovica sirky priestoru pre hraca (14 + 25)
+        double offsetX = this.pozadie.getLavyDolnyX() + 39 - Bodka.VELKOST / 2 - 1;
+        double offsetY = this.pozadie.getLavyDolnyY() + 39 - Bodka.VELKOST / 2;
+
+        scanner.nextLine(); // preskocenie radku kde sa vysvetluje syntax
+        int i = 0;
+        while (scanner.hasNextLine()) {
+            double riadok = scanner.nextInt();
+            double stlpec = scanner.nextInt();
+            TypBodky typBodky;
+            if (i < this.pocetMalychBodiek) {
+                typBodky = TypBodky.MALA_BODKA;
+            } else {
+                typBodky = TypBodky.VELKA_BODKA;
+            }
+            this.bodky[(int)riadok][(int)stlpec] = new Bodka((int)(offsetX + stlpec * Bodka.VZDIALENOST_MEDZI_BODKAMI), 
+                                                             (int)(offsetY + riadok * Bodka.VZDIALENOST_MEDZI_BODKAMI), typBodky);
+            if (typBodky == TypBodky.VELKA_BODKA) {
+                this.velkeBodky[i - this.pocetMalychBodiek] = this.bodky[(int)riadok][(int)stlpec];
+            }
+            i++;
+        }
+    }
+
+    public void animaciaBodiek() {
+        switch (this.pocetTikov) {
+            case 10:
+                for (Bodka bodka : this.velkeBodky) {
+                    if (!bodka.jeZjedena()) {
+                        bodka.skry();
+                    }
+                }
+                break;
+            case 20:
+                for (Bodka bodka : this.velkeBodky) {
+                    if (!bodka.jeZjedena()) {
+                        bodka.zobraz();
+                    }
+                }
+                this.pocetTikov = -1;
+                break;
+        }
+        this.pocetTikov++;
+    }
 }

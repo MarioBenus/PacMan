@@ -4,16 +4,14 @@ public class Text {
     private int lavyHornyX;
     private int lavyHornyY;
     private boolean jeViditelny;
-    private String font;
     private int velkost;
     private String farba;
 
 
-    public Text(String text, String font, int velkost, String farba, int lavyHornyX, int lavyHornyY) {
+    public Text(String text, int lavyHornyX, int lavyHornyY) {
         this.text = text;
-        this.font = font;
-        this.velkost = velkost;
-        this.farba = farba;
+        this.velkost = 35;
+        this.farba = "white";
         this.lavyHornyX = lavyHornyX;
         this.lavyHornyY = lavyHornyY;
     }
@@ -23,9 +21,20 @@ public class Text {
         this.nakresli();
     }
 
+    public void skry() {
+        this.jeViditelny = false;
+        Platno canvas = Platno.dajPlatno();
+        canvas.erase(this);
+    }
+
     public void nakresli() {
         if (this.jeViditelny) {
-            Platno.dajPlatno().draw(this, this.text, this.font, this.velkost, this.farba, this.lavyHornyX, -this.lavyHornyY);
+            Platno.dajPlatno().draw(this, this.text, this.velkost, this.farba, this.lavyHornyX, -this.lavyHornyY);
         }
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        this.zobraz();
     }
 }

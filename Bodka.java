@@ -75,4 +75,8 @@ public class Bodka {
             this.obrazok.zobraz();
         }
     }
+
+    public TypBodky geTypBodky() {
+        return this.typBodky;
+    }
 }

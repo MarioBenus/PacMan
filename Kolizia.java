@@ -148,7 +148,7 @@ public class Kolizia {
 
     }
 
-    public void zjedzBodku(int hracLavyDolnyX, int hracLavyDolnyY) {
+    public TypBodky zjedzBodku(int hracLavyDolnyX, int hracLavyDolnyY) {
         hracLavyDolnyX -= this.pozadie.getLavyDolnyX() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
         hracLavyDolnyY -= this.pozadie.getLavyDolnyY() + 14 - (int)(Bodka.VZDIALENOST_MEDZI_BODKAMI / 2);
 
@@ -157,16 +157,17 @@ public class Kolizia {
 
         // nastava v pripade prechodu cez warp tunnel
         if (suradnicaHracaX < 0 || suradnicaHracaX > 25) {
-            return;
+            return TypBodky.ZIADNA;
         }
 
         if (this.bodky[suradnicaHracaY][suradnicaHracaX] != null) {
             if (!this.bodky[suradnicaHracaY][suradnicaHracaX].jeZjedena()) {
                 this.bodky[suradnicaHracaY][suradnicaHracaX].zjedz();
                 this.pocetZostavajucichBodiek--;
+                return this.bodky[suradnicaHracaY][suradnicaHracaX].geTypBodky();
             }
         }
-
+        return TypBodky.ZIADNA;
 
     }
 

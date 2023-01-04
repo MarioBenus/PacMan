@@ -1,6 +1,8 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
+
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Image;
@@ -17,6 +19,9 @@ import java.awt.Font; // ZMENA
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
+
+import java.awt.GraphicsEnvironment;
+import java.io.File;
 
 /**
  * Canvas is a class to allow for simple graphical drawing on a canvas.
@@ -81,6 +86,19 @@ public class Platno {
         this.frame.pack();
         this.objekty = new ArrayList<Object>();
         this.tvary = new HashMap<Object, IPopisTvaru>();
+
+        // ZMENA: pridanie custom fontu
+        // skopirovane z https://docs.oracle.com/javase/tutorial/2d/text/fonts.html
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("joystix monospace.ttf")));
+        } catch (Exception e) {
+            System.out.println("Error v pridavani fontu");
+        }
+
+        // ZMENA: pridane normalne spravanie okna
+        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.frame.setAutoRequestFocus(false);
     }
 
     public int getSirka() { // ZMENA: getter na sirku a vysku platna
@@ -144,12 +162,12 @@ public class Platno {
         //this.redraw(); ZMENA: redraw zmeneny aby bol spravovany cisto iba Hrou
     }
 
-    public void draw(Object objekt, String text, String font, int velkost, String farba, int poziciaX, int poziciaY) { // ZMENA
+    public void draw(Object objekt, String text, int velkost, String farba, int poziciaX, int poziciaY) { // ZMENA
         if (!this.objekty.contains(objekt)) { 
             this.objekty.add(objekt); 
         }
 
-        this.tvary.put(objekt, new PopisTextu(text, font, velkost, farba, poziciaX, poziciaY));
+        this.tvary.put(objekt, new PopisTextu(text, velkost, farba, poziciaX, poziciaY));
     }
  
     /**
@@ -294,15 +312,13 @@ public class Platno {
     // ZMENA: pridanie vykreslovania textu
     private class PopisTextu implements IPopisTvaru { 
         private String text;
-        private String font;
         private int velkost;
         private String farba;
         private int poziciaX;
         private int poziciaY;
 
-        private PopisTextu(String text, String font, int velkost, String farba, int poziciaX, int poziciaY) {
+        private PopisTextu(String text, int velkost, String farba, int poziciaX, int poziciaY) {
             this.text = text;
-            this.font = font;
             this.velkost = velkost;
             this.farba = farba;
             this.poziciaX = poziciaX;
@@ -310,7 +326,7 @@ public class Platno {
         }
 
         public void draw(Graphics2D graphic) {
-            graphic.setFont(new Font(this.font, Font.PLAIN, this.velkost));
+            graphic.setFont(new Font("joystix monospace", Font.PLAIN, this.velkost));
             Platno.this.setForegroundColor(this.farba);
             graphic.drawString(this.text, this.poziciaX, this.poziciaY);           
         }

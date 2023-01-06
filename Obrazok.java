@@ -15,7 +15,7 @@ import java.awt.geom.AffineTransform;
 public class Obrazok {
     private boolean jeViditelny;
     
-    private int lavyDolnyX; // ZMENA: zmenene z lavy horny na lavy dolny, pretoze sa mi s tym pracuje pesie
+    private int lavyDolnyX; // ZMENA: zmenene z lavy horny na lavy dolny, pretoze sa mi s tym pracuje lepsie
     private int lavyDolnyY;
     private int uhol;
     

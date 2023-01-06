@@ -19,7 +19,7 @@ public class UI {
         this.zostavajuceZivoty = new Obrazok[2];
         this.tikAnimacie = 0;
 
-        for (int i = 0; i < zostavajuceZivoty.length; i++) {
+        for (int i = 0; i < this.zostavajuceZivoty.length; i++) {
             this.zostavajuceZivoty[i] = new Obrazok("Obrazky\\player-2.png");
             this.zostavajuceZivoty[i].zmenUhol(270);
             this.zostavajuceZivoty[i].zmenPolohu(180 + i * 60, -930);

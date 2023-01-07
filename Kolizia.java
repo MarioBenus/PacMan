@@ -9,6 +9,7 @@ public class Kolizia {
     private int pocetZostavajucichBodiek;
 
     private final int velkostHraca = 50;
+    private final int zmensenaVelkostHraca = 44;
     private final int pocetMalychBodiek = 240;
     private final int pocetVelkychBodiek = 4;
 
@@ -69,14 +70,14 @@ public class Kolizia {
 
     // testuje ci pozadovanySmer je volny
     // vyuziva sa na zatacky
-    public boolean checkVolnySmer(int hracLavyDolnyX, int hracLavyDolnyY, Smer pozadovanySmer) {
+    public boolean checkVolnySmer(int postavaLavyDolnyX, int postavaLavyDolnyY, int velkostObrazka, Smer pozadovanySmer) {
         // chcem aby hitbox bol mensi ako 50x50, pretoze hrac sa pohybuje po 4 pixeloch a nechcem
         // aby nahodou "preskocil" tu medzeru
         // asi budem musiet mierne zmenit pri implementacii duchov
-        int testovanyHitboxLavyDolnyX = hracLavyDolnyX;
-        int testovanyHitboxLavyDolnyY = hracLavyDolnyY;
-        int testovanyHitboxPravyHornyX = hracLavyDolnyX + 44;
-        int testovanyHitboxPravyHornyY = hracLavyDolnyY + 44;
+        int testovanyHitboxLavyDolnyX = postavaLavyDolnyX - (this.zmensenaVelkostHraca - velkostObrazka) / 2;
+        int testovanyHitboxLavyDolnyY = postavaLavyDolnyY - (this.zmensenaVelkostHraca - velkostObrazka) / 2;
+        int testovanyHitboxPravyHornyX = postavaLavyDolnyX + this.zmensenaVelkostHraca;
+        int testovanyHitboxPravyHornyY = postavaLavyDolnyY + this.zmensenaVelkostHraca;
 
         // posun hitboxu do smeru kam chce hrac ist
         // 10 je arbitrarna hodnota, mohla by byt o nieco viac aj menej, ale nezalezi na tom,

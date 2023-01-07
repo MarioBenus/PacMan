@@ -8,13 +8,11 @@ import java.io.FileWriter;
 // a taktiez udrziavanie skore, zivotov a updateovania UI
 public class ManazerHraca extends KeyAdapter {
     private Postava hrac;
-    private Kolizia kolizia;
     private Smer pozadovanySmer;
     private Smer tempSmer;
     private int najvyssieSkore;
     private int skore;
     private int zivoty;
-    private Pohyb pohyb;
 
     private UI ui;
 
@@ -22,13 +20,11 @@ public class ManazerHraca extends KeyAdapter {
         Platno.dajPlatno().addKeyListener(this);
         this.hrac = new Postava(TypPostavy.HRAC, 500, -700);
         this.hrac.setSmer(Smer.HORE);
-        this.kolizia = Kolizia.dajKoliziu();
         this.pozadovanySmer = Smer.ZIADNY;
         this.tempSmer = Smer.HORE;
         this.ui = new UI();
         this.zivoty = 3;
         this.skore = 0;
-        this.pohyb = new Pohyb(this.kolizia);
 
         try {
             Scanner scanner = new Scanner(new File("highscore.level"));
@@ -50,7 +46,7 @@ public class ManazerHraca extends KeyAdapter {
         this.hrac.setPozadovanySmer(this.tempSmer);
         
         // zjedenie bodiek a logika ich zjedenia
-        switch (this.kolizia.zjedzBodku(this.hrac.getX(), this.hrac.getY())) {
+        switch (this.hrac.zjedzBodku()) {
             case VELKA_BODKA:
                 // TODO: pridanie logiky zjedenia velkej bodky
                 this.skore += 50;
@@ -59,6 +55,8 @@ public class ManazerHraca extends KeyAdapter {
             case MALA_BODKA:
                 this.skore += 10;
                 this.ui.setCurrentScore(this.skore);
+                break;
+            default:
                 break;
         }
         

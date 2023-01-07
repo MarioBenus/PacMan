@@ -9,11 +9,13 @@ public class Hra {
     private Obrazok pozadie;
     private Kolizia kolizia;
     
-    public Hra() throws InterruptedException {
+    public Hra() {
         this.kolizia = Kolizia.dajKoliziu();
         this.manazerHraca = new ManazerHraca();
-        this.manazerDuchov = new ManazerDuchov(this.kolizia, this.manazerHraca.getPostavaHrac());
+        this.manazerDuchov = new ManazerDuchov(this.kolizia, this.manazerHraca.getPostavaHrac());    
+    }
 
+    public void start() {
         double dalsiTick = System.nanoTime();
 
         // game loop
@@ -42,7 +44,6 @@ public class Hra {
             //System.out.println((System.nanoTime() - testDeltaTime) / 1000000);
 
         }
-         
     }
 
 

@@ -4,7 +4,6 @@ public class ManazerDuchov {
     private Kolizia kolizia;
     private Postava hrac;
     private Postava[] duchovia;
-    private Pohyb pohyb;
 
     public ManazerDuchov(Kolizia kolizia, Postava hrac) {
         this.kolizia = Kolizia.dajKoliziu();
@@ -20,24 +19,58 @@ public class ManazerDuchov {
     }
 
     public void tick() {
-        int horizontalnaVzdialenostOdHraca = this.duchovia[3].getX() - this.hrac.getX();
-        int vertikalnaVzdialenostOdHraca = this.duchovia[3].getY() - this.hrac.getY();
-
-        if (Math.abs(horizontalnaVzdialenostOdHraca) > Math.abs(vertikalnaVzdialenostOdHraca)) {
-            if (horizontalnaVzdialenostOdHraca < 0) {
-                this.duchovia[3].setPozadovanySmer(Smer.VPRAVO);
-            } else {
-                this.duchovia[3].setPozadovanySmer(Smer.VLAVO);
-            }
-        } else {
-            if (vertikalnaVzdialenostOdHraca < 0) {
-                this.duchovia[3].setPozadovanySmer(Smer.HORE);
-            } else {
-                this.duchovia[3].setPozadovanySmer(Smer.DOLE);
-            }
-        }
+        
+        this.rozhodniSmer(new Postava[] {this.duchovia[3]});
+        
 
         this.duchovia[3].tick();
 
+    }
+
+    public void rozhodniSmer(Postava[] duchovia) {
+        for (Postava duch : duchovia) {
+            int horizontalnaVzdialenostOdHraca = duch.getX() - this.hrac.getX();
+            int vertikalnaVzdialenostOdHraca = duch.getY() - this.hrac.getY();
+
+            if (Math.abs(vertikalnaVzdialenostOdHraca) > Math.abs(horizontalnaVzdialenostOdHraca)) {
+                if ((duch.getSmer() == Smer.HORE || duch.getSmer() == Smer.DOLE) && duch.jeNarazenaOStenu()) {
+                    if ((horizontalnaVzdialenostOdHraca > 0 && duch.checkVolnySmer(Smer.VLAVO)) || !duch.checkVolnySmer(Smer.VPRAVO)) {
+                        duch.setPozadovanySmer(Smer.VLAVO);  
+                        return;                     
+                    } else {
+                        duch.setPozadovanySmer(Smer.VPRAVO);
+                        return;
+                    }
+                }
+                if (duch.getSmer() == Smer.VPRAVO || duch.getSmer() == Smer.VLAVO) {
+                    if ((vertikalnaVzdialenostOdHraca > 0 && !duch.jeNarazenaOStenu()) || (duch.jeNarazenaOStenu() && duch.checkVolnySmer(Smer.DOLE))) {
+                        duch.setPozadovanySmer(Smer.DOLE);
+                        return;
+                    } else {
+                        duch.setPozadovanySmer(Smer.HORE);
+                        return;
+                    }
+                } 
+            } else {
+                if ((duch.getSmer() == Smer.VPRAVO || duch.getSmer() == Smer.VLAVO) && duch.jeNarazenaOStenu()) {
+                    if ((vertikalnaVzdialenostOdHraca > 0 && duch.checkVolnySmer(Smer.DOLE)) || !duch.checkVolnySmer(Smer.HORE)) {
+                        duch.setPozadovanySmer(Smer.DOLE);  
+                        return;                     
+                    } else {
+                        duch.setPozadovanySmer(Smer.HORE);
+                        return;
+                    }
+                }
+                if (duch.getSmer() == Smer.HORE || duch.getSmer() == Smer.DOLE) {
+                    if ((horizontalnaVzdialenostOdHraca > 0 && !duch.jeNarazenaOStenu()) || (duch.jeNarazenaOStenu() && duch.checkVolnySmer(Smer.VLAVO))) {
+                        duch.setPozadovanySmer(Smer.VLAVO);
+                        return;
+                    } else {
+                        duch.setPozadovanySmer(Smer.VPRAVO);
+                        return;
+                    }
+                } 
+            }
+        }
     }
 }

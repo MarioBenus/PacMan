@@ -7,18 +7,20 @@ public class Postava {
     private Smer pozadovanySmer;
     private Obrazok obrazok;
 
+    // TODO: premenovat
+    private boolean jeNarazenaOStenu;
+
     private int pocetTikov;
 
     private TypPostavy typPostavy;
-    private Pohyb pohyb;
 
     private Kolizia kolizia;
 
 
     public Postava(TypPostavy typPostavy, int stredX, int stredY) {
+        this.jeNarazenaOStenu = false;
         this.typPostavy = typPostavy;
         this.kolizia = Kolizia.dajKoliziu();
-        this.pohyb = new Pohyb(this.kolizia);
 
         switch (this.typPostavy) {
             case HRAC:
@@ -51,8 +53,8 @@ public class Postava {
 
     // movement hraca podla posledneho stlaceneho smeru
     public void tick() {
-        this.pohyb.koliziaStien(this);
-        this.pohyb.zmenaSmeru(this.pozadovanySmer, this);
+        this.koliziaStien();
+        this.zmenaSmeru(this.pozadovanySmer);
 
         this.animacia();
 
@@ -61,6 +63,40 @@ public class Postava {
         this.obrazok.posunZvisle(this.rychlostPohybu * this.momentalnySmer.getNasobicY());
         
 
+    }
+
+    // udrziavanie hraca mimo stien -- ked sa hrac dostane do steny, tak ho to posunie z nej von
+    public void koliziaStien() {
+        int korekcia = this.kolizia.checkKoliziaStena(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), this.momentalnySmer);
+        if (korekcia != 0) {
+            this.jeNarazenaOStenu = true;
+        } else {
+            this.jeNarazenaOStenu = false;
+        }
+        if (this.momentalnySmer == Smer.VPRAVO || this.momentalnySmer == Smer.VLAVO) {
+            this.obrazok.posunVodorovne(korekcia);
+        } else if (this.momentalnySmer == Smer.HORE || this.momentalnySmer == Smer.DOLE) {
+            this.obrazok.posunZvisle(korekcia);
+        }
+    }
+
+    public void zmenaSmeru(Smer pozadovanySmer) {
+        if (pozadovanySmer != this.momentalnySmer) { // tieto 2 if-y su samostatne aby sa zbytocne nekontrolovala kolizia ked nemusi
+            if (this.kolizia.checkVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), pozadovanySmer)) {
+
+                // posun hraca do volneho smeru
+                this.obrazok.posunVodorovne(this.rychlostPohybu * pozadovanySmer.getNasobicX());
+                this.obrazok.posunZvisle(this.rychlostPohybu * pozadovanySmer.getNasobicY());     
+                // hrac musi byt posunuty este trochu do stareho smeru, aby korekcia nastala vzhladom na spravnu stenu 
+                this.obrazok.posunVodorovne(2 * this.rychlostPohybu * this.momentalnySmer.getNasobicX());
+                this.obrazok.posunZvisle(2 * this.rychlostPohybu * this.momentalnySmer.getNasobicY());
+                
+                this.koliziaStien();
+                this.jeNarazenaOStenu = false;
+    
+                this.momentalnySmer = pozadovanySmer;
+            }
+        }
     }
 
 
@@ -115,7 +151,9 @@ public class Postava {
                 break;
             case DOLE:
                 cestkaKObrazkuDucha += "down-";
-                break;        
+                break;     
+            default:
+                break;   
         }
         switch (this.pocetTikov) {
             case 0:
@@ -181,6 +219,19 @@ public class Postava {
 
     public void setPozadovanySmer(Smer smer) {
         this.pozadovanySmer = smer;
+    }
+
+    // TODO: tiez premenovat
+    public boolean jeNarazenaOStenu() {
+        return this.jeNarazenaOStenu;
+    }
+
+    public boolean checkVolnySmer(Smer smer) {
+        return this.kolizia.checkVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), smer);
+    }
+
+    public TypBodky zjedzBodku() {
+        return this.kolizia.zjedzBodku(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY());
     }
     
 }

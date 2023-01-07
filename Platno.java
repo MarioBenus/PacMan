@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -99,6 +100,12 @@ public class Platno {
         // ZMENA: pridane normalne spravanie okna
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.frame.setAutoRequestFocus(false);
+        try {
+            this.frame.setIconImage(ImageIO.read(new File("Obrazky\\player-2.png")));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
     }
 
     public int getSirka() { // ZMENA: getter na sirku a vysku platna

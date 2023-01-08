@@ -16,7 +16,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;*/
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.Font; // ZMENA
+import java.awt.Font; // ZMENA: pridanie importu na font
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -97,9 +97,11 @@ public class Platno {
             System.out.println("Error v pridavani fontu");
         }
 
-        // ZMENA: pridane normalne spravanie okna
+        // ZMENA: ukoncenie programu pri zavreti okna, zabranenie zmeny velkosti okna, vypnutie neustaleho vyskakovania okna dopredu
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.frame.setAutoRequestFocus(false);
+        this.frame.setResizable(false);
+        // ZMENA: pridanie ikonky
         try {
             this.frame.setIconImage(ImageIO.read(new File("Obrazky\\player-2.png")));
         } catch (Exception e) {
@@ -108,10 +110,16 @@ public class Platno {
         
     }
 
+    /**
+     * @return Sirka platna
+     */
     public int getSirka() { // ZMENA: getter na sirku a vysku platna
         return Platno.SIRKA;
     }
     
+    /**
+     * @return Vyska platna
+     */
     public int getVyska() {
         return Platno.VYSKA;
     }
@@ -238,6 +246,9 @@ public class Platno {
 
     // ZMENA: repaint je samostatna metoda pretoze redraw trva relativne dlho a chcel som mat co
     //        najpravidelnejsie vykreslovanie aby to vyzeralo co najviac plynulo 
+    /**
+     * Zobrazenie tvarov na platne
+     */
     public void repaint() {
         this.canvas.repaint();
     }
@@ -256,6 +267,7 @@ public class Platno {
     public void addKeyListener(KeyListener listener) {
         this.frame.addKeyListener(listener);
     }
+
     
     /*public void addMouseListener(MouseListener listener) { 
         this.canvas.addMouseListener(listener);
@@ -332,6 +344,9 @@ public class Platno {
             this.poziciaY = poziciaY;
         }
 
+        /**
+         * Zobrazi text na platne
+         */
         public void draw(Graphics2D graphic) {
             graphic.setFont(new Font("joystix monospace", Font.PLAIN, this.velkost));
             Platno.this.setForegroundColor(this.farba);

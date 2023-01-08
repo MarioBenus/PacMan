@@ -1,26 +1,49 @@
+/**
+ * Postava, ktora sa pohybuje na platne -- duch alebo hrac
+ */
+public class Postava {     
+    private final int zaciatocnaPoziciaX;
+    private final int zaciatocnaPoziciaY;
 
-// postava, ktoru hrac ovlada
-public class Postava {
     private int rychlostPohybu;
     
     private Smer momentalnySmer;
     private Smer pozadovanySmer;
     private Obrazok obrazok;
+    
+    // atributy specificke pre ducha
+    private boolean jeVBoxe;
+    private boolean maOdistZBoxu;
+    private final int poziciaBoxuX = 500;
+    private final int poziciaBoxuY = -500;
+    private final int dlzkaJedlostiDucha = 300; // 300 frameov = 5 sekund
+    private int zostatokJedlostiDucha; // ako dlho sa ma duch este dat zjest
 
-    // TODO: premenovat
-    private boolean jeNarazenaOStenu;
+    private boolean jeNarazenyOStenu;
 
-    private int pocetTikov;
+    private int pocetTikovAnimacia;
 
     private TypPostavy typPostavy;
 
     private Kolizia kolizia;
 
-
+    /**
+     * Konstruktor pre postavu
+     * 
+     * @param typPostavy enum typu postavy -- hrac alebo duch
+     * @param stredX suradnica x bodu, kde sa ma na zaciatku nachadzat stred postavy
+     * @param stredY suradnica y bodu, kde sa ma na zaciatku nachadzat stred postavy
+     */
     public Postava(TypPostavy typPostavy, int stredX, int stredY) {
-        this.jeNarazenaOStenu = false;
+        this.zaciatocnaPoziciaX = stredX;
+        this.zaciatocnaPoziciaY = stredY;
+
+        this.maOdistZBoxu = false;
+        this.jeNarazenyOStenu = false;
         this.typPostavy = typPostavy;
-        this.kolizia = Kolizia.dajKoliziu();
+        this.kolizia = Kolizia.getKolizia();
+        this.zostatokJedlostiDucha = 0;
+        this.jeVBoxe = false;
 
         switch (this.typPostavy) {
             case HRAC:
@@ -40,7 +63,7 @@ public class Postava {
                 break;
         }
 
-        this.obrazok.zmenPolohu(stredX, stredY);
+        this.obrazok.zmenPolohu(this.zaciatocnaPoziciaX, this.zaciatocnaPoziciaY);
         this.obrazok.zobraz();
 
         this.momentalnySmer = Smer.HORE;
@@ -48,41 +71,53 @@ public class Postava {
 
         this.rychlostPohybu = 4;
 
-        this.pocetTikov = 0;
+        this.pocetTikovAnimacia = 0;
     }
 
-    // movement hraca podla posledneho stlaceneho smeru
+    /**
+     * Update pohybu postavy a jej animacia
+     */
     public void tick() {
-        this.koliziaStien();
-        this.zmenaSmeru(this.pozadovanySmer);
+
+        if (this.jeVBoxe && this.maOdistZBoxu) {
+            this.vyjdenieZBoxu();
+        } else if (!this.jeVBoxe) {
+            this.koliziaStien();
+            this.zmenaSmeru(this.pozadovanySmer);
+            this.obrazok.posunVodorovne(this.rychlostPohybu * this.momentalnySmer.getNasobicX());
+            this.obrazok.posunZvisle(this.rychlostPohybu * this.momentalnySmer.getNasobicY());
+        } 
 
         this.animacia();
-
-        
-        this.obrazok.posunVodorovne(this.rychlostPohybu * this.momentalnySmer.getNasobicX());
-        this.obrazok.posunZvisle(this.rychlostPohybu * this.momentalnySmer.getNasobicY());
-        
-
     }
 
-    // udrziavanie hraca mimo stien -- ked sa hrac dostane do steny, tak ho to posunie z nej von
+    /**
+     * Zabezpecuje, aby postava nebola v stene
+     */
     public void koliziaStien() {
-        int korekcia = this.kolizia.checkKoliziaStena(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), this.momentalnySmer);
-        if (korekcia != 0) {
-            this.jeNarazenaOStenu = true;
+        int posun = this.kolizia.pozriKoliziaStena(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.getVyska(), this.momentalnySmer);
+
+        // urcuje ci postava je narazena o stenu a nema sa kam dalej pohnut
+        if (posun != 0) {
+            this.jeNarazenyOStenu = true;
         } else {
-            this.jeNarazenaOStenu = false;
+            this.jeNarazenyOStenu = false;
         }
+
         if (this.momentalnySmer == Smer.VPRAVO || this.momentalnySmer == Smer.VLAVO) {
-            this.obrazok.posunVodorovne(korekcia);
+            this.obrazok.posunVodorovne(posun);
         } else if (this.momentalnySmer == Smer.HORE || this.momentalnySmer == Smer.DOLE) {
-            this.obrazok.posunZvisle(korekcia);
+            this.obrazok.posunZvisle(posun);
         }
     }
 
+    /**
+     * Nastavenie smeru, kde sa ma postava otocit pri dalsej zakrute
+     * @param pozadovanySmer Smer, kde ma postava ist
+     */
     public void zmenaSmeru(Smer pozadovanySmer) {
         if (pozadovanySmer != this.momentalnySmer) { // tieto 2 if-y su samostatne aby sa zbytocne nekontrolovala kolizia ked nemusi
-            if (this.kolizia.checkVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), pozadovanySmer)) {
+            if (this.kolizia.pozriVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.getVyska(), pozadovanySmer)) {
 
                 // posun hraca do volneho smeru
                 this.obrazok.posunVodorovne(this.rychlostPohybu * pozadovanySmer.getNasobicX());
@@ -92,20 +127,49 @@ public class Postava {
                 this.obrazok.posunZvisle(2 * this.rychlostPohybu * this.momentalnySmer.getNasobicY());
                 
                 this.koliziaStien();
-                this.jeNarazenaOStenu = false;
+                this.jeNarazenyOStenu = false;
     
                 this.momentalnySmer = pozadovanySmer;
             }
         }
     }
 
+    /**
+     * Vyjdenie z boxu -- pouzivane pre ducha
+     */
+    private void vyjdenieZBoxu() {
+        // posun do stredu boxu
+        if (this.obrazok.getLavyDolnyX() < 477) {
+            this.obrazok.posunVodorovne((this.rychlostPohybu - 1) * Smer.VPRAVO.getNasobicX());
+            this.momentalnySmer = Smer.VPRAVO;
+            return;
+        }
+        if (this.obrazok.getLavyDolnyX() > 479) {
+            this.obrazok.posunVodorovne((this.rychlostPohybu - 1) * Smer.VLAVO.getNasobicX());
+            this.momentalnySmer = Smer.VLAVO;
+            return;
+        }
 
+        // vyjdenie z boxu
+        this.obrazok.posunZvisle((this.rychlostPohybu - 1) * Smer.HORE.getNasobicY());
+        this.momentalnySmer = Smer.HORE;
+        if (this.obrazok.getLavyDolnyY() >= -420) {
+            this.koliziaStien();
+            this.jeVBoxe = false;
+        }
+    }
+
+    
+
+    /**
+     * Animacia postavy
+     */
     private void animacia() {
         String cestkaKObrazkuDucha = "Obrazky\\";
         switch (this.typPostavy) {
             case HRAC:
                 this.obrazok.zmenUhol(this.momentalnySmer.getUhol());
-                switch (this.pocetTikov) {
+                switch (this.pocetTikovAnimacia) {
                     case 0:
                         this.obrazok.zmenObrazok("Obrazky\\player-1.png");
                         break;
@@ -119,12 +183,13 @@ public class Postava {
                         this.obrazok.zmenObrazok("Obrazky\\player-2.png");
                         break;
                     case 19:
-                        this.pocetTikov = -1;
+                        this.pocetTikovAnimacia = -1;
                         break;
                 }
-                this.pocetTikov++;
+                this.pocetTikovAnimacia++;
                 return;
-
+            
+            
         
             case CERVENY_DUCH:
                 cestkaKObrazkuDucha += "redghost-";
@@ -155,7 +220,24 @@ public class Postava {
             default:
                 break;   
         }
-        switch (this.pocetTikov) {
+        if (this.zostatokJedlostiDucha > 0) { // Ak je duch jedly, tak ma samostatny obrazok
+            if (this.zostatokJedlostiDucha > 150) {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-blue-";
+            } else if (this.zostatokJedlostiDucha > 120) {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-white-";
+            } else if (this.zostatokJedlostiDucha > 90) {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-blue-";
+            } else if (this.zostatokJedlostiDucha > 60) {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-white-";
+            } else if (this.zostatokJedlostiDucha > 30) {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-blue-";
+            } else {
+                cestkaKObrazkuDucha = "Obrazky\\eatableghost-white-";
+            }
+            this.zostatokJedlostiDucha--;
+            
+        }
+        switch (this.pocetTikovAnimacia) {
             case 0:
                 cestkaKObrazkuDucha += "1.png";
                 this.obrazok.zmenObrazok(cestkaKObrazkuDucha);
@@ -165,73 +247,189 @@ public class Postava {
                 this.obrazok.zmenObrazok(cestkaKObrazkuDucha);
                 break;
             case 19:
-                this.pocetTikov = -1;
+                this.pocetTikovAnimacia = -1;
                 break;
-        }
-
-        
-        this.pocetTikov++;
+        }   
+        this.pocetTikovAnimacia++;
     }
 
+    /**
+     * @param smer Smer, ktorym sa ma postava hybat
+     */
     public void setSmer(Smer smer) {
         this.momentalnySmer = smer;
     }
 
+    /**
+     * @return Smer, v ktorom sa momentalne postava hybe
+     */
     public Smer getSmer() {
         return this.momentalnySmer;
     }
 
-    public int getX() {
+    /**
+     * @return Suradnicu x laveho dolneho rohu postavy
+     */
+    public int getLavyDolnyX() {
         return this.obrazok.getLavyDolnyX();
     }
     
-    public int getY() {
+    /**
+     * @return Suradnicu y laveho dolneho rohu postavy
+     */
+    public int getLavyDolnyY() {
         return this.obrazok.getLavyDolnyY();
     }
 
+    /**
+     * @return Rychlost, ktorou sa postava pohybuje
+     */
     public int getRychlostPohybu() {
         return this.rychlostPohybu;
     }
 
+    /**
+     * @param vzdialenost Vzdialenost, o ktoru sa ma hrac posunut doprava
+     */
     public void posunVodorovne(int vzdialenost) {
         this.obrazok.posunVodorovne(vzdialenost);
     }
     
+    /**
+     * @param vzdialenost Vzdialenost, o ktoru sa ma hrac posunut hore
+     */
     public void posunZvisle(int vzdialenost) {
         this.obrazok.posunZvisle(vzdialenost);
     }
 
+    /**
+     * @return Velkost obrazku postavy
+     */
     public int getVelkostObrazka() {
-        return this.obrazok.vyska();
+        return this.obrazok.getVyska();
     }
 
-    public Obrazok getObrazok() {
-        return this.obrazok;
-    }
-
+    /**
+     * @param rychlost Rychlost, ktorou sa ma postava pohybovat
+     */
     public void setRychlost(int rychlost) {
         this.rychlostPohybu = rychlost;
     }
 
+    /**
+     * Nastavuje suradnice x a y stredu postavy
+     * @param x Suradnica x stredu postavy
+     * @param y Suradnica y stredu postavy
+     */
     public void setSuradnice(int x, int y) {
         this.obrazok.zmenPolohu(x, y);
     }
 
+    /**
+     * @param smer Smer, ktorym sa postava otocit, ked to bude mozne
+     */
     public void setPozadovanySmer(Smer smer) {
         this.pozadovanySmer = smer;
     }
 
-    // TODO: tiez premenovat
-    public boolean jeNarazenaOStenu() {
-        return this.jeNarazenaOStenu;
+    /**
+     * @return True, ak postava je narazena o stenu a nema sa kam dalej pohnut
+     */
+    public boolean jeNarazenyOStenu() {
+        return this.jeNarazenyOStenu;
     }
 
-    public boolean checkVolnySmer(Smer smer) {
-        return this.kolizia.checkVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.vyska(), smer);
+    /**
+     * @param smer Smer, ktory sa ma kontrolovat, ci je volny
+     * @return True, ak sa v danom smere nenachadza ziadna stena
+     */
+    public boolean pozriVolnySmer(Smer smer) {
+        return this.kolizia.pozriVolnySmer(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.getVyska(), smer);
     }
 
+    /**
+     * @return Typ bodky, ktoru postava zjedla
+     */
     public TypBodky zjedzBodku() {
         return this.kolizia.zjedzBodku(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY());
+    }
+
+    /**
+     * Zjedenie postavy -- presunutie naspat to boxu a zrusenie jedlosti
+     */
+    public void zjedenie() {
+        this.obrazok.zmenPolohu(this.poziciaBoxuX, this.poziciaBoxuY);
+        this.jeVBoxe = true;
+        this.zostatokJedlostiDucha = 0;
+    }
+
+    /**
+     * @return True ak sa da zjest
+     */
+    public boolean daSaZjest() {
+        return (this.zostatokJedlostiDucha > 0);
+    }
+
+    /**
+     * @return True, ak postava narazila do ducha, ktory sa neda zjest
+     */
+    public boolean koliziaSDuchom() {
+        return this.kolizia.koliziaSDuchom(this.obrazok.getLavyDolnyX(), this.obrazok.getLavyDolnyY(), this.obrazok.getVyska());
+    }
+
+    /**
+     * Nastavi ci sa da duch dat zjest a otoci o 180 stupnov
+     * @param moznost Moznost ci sa ma postava dat zjest alebo nie
+     */
+    public void setDaSaZjest(boolean moznost) {
+        if (moznost) {
+            this.zostatokJedlostiDucha = this.dlzkaJedlostiDucha;
+
+            // otocenie ducha prec od hraca
+            if (this.momentalnySmer == Smer.VPRAVO) {
+                this.momentalnySmer = Smer.VLAVO;
+            } else if (this.momentalnySmer == Smer.VLAVO) {
+                this.momentalnySmer = Smer.VPRAVO;
+            } else if (this.momentalnySmer == Smer.HORE) {
+                this.momentalnySmer = Smer.DOLE;
+            } else if (this.momentalnySmer == Smer.DOLE) {
+                this.momentalnySmer = Smer.HORE;
+            }
+        }
+    }
+
+    /**
+     * @return Typ Postavy
+     */
+    public TypPostavy getTypPostavy() {
+        return this.typPostavy;
+    }
+
+    /**
+     * Presunie postavu na jej zaciatocnu poziciu
+     */
+    public void presunNaZaciatocnuPoziciu() {
+        this.obrazok.zmenPolohu(this.zaciatocnaPoziciaX, this.zaciatocnaPoziciaY);
+        this.momentalnySmer = Smer.HORE;
+        this.zostatokJedlostiDucha = -1;
+        if (!this.jeVBoxe) {
+            this.koliziaStien();
+        }
+    }
+
+    /**
+     * @param moznost Moznost, ci sa duch nachadza v boxe alebo nie
+     */
+    public void setJeVBoxe(boolean moznost) {
+        this.jeVBoxe = moznost;
+    }
+
+    /**
+     * Nastavuje ci ma duch zostat v boxe alebo odist
+     * @param moznost True -- ma odist z boxu, False -- ma tam zostat
+     */
+    public void setMaOdistZBoxu(boolean moznost) {
+        this.maOdistZBoxu = moznost;
     }
     
 }

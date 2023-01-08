@@ -1,43 +1,43 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
 
-// stara sa o zmenu stavu hraca -- zmena smeru podla stlacenej klavesy a udrziavania ho mimo stien
-// a taktiez udrziavanie skore, zivotov a updateovania UI
+/**
+ * stara sa o zmenu stavu hraca -- zmena smeru podla stlacenej klavesy
+ * a taktiez udrziavanie skore, zivotov a updateovania UI
+ */
 public class ManazerHraca extends KeyAdapter {
     private Postava hrac;
-    private Smer pozadovanySmer;
     private Smer tempSmer;
-    private int najvyssieSkore;
-    private int skore;
     private int zivoty;
+    private boolean koniecHry;
+    private boolean smrt;
+    private int pocetPridanychZivotov;
+
+    private final int zaciatocneSuradniceHracaX = 500;
+    private final int zaciatocneSuradniceHracaY = -700;
+
 
     private UI ui;
 
+    /**
+     * Konstruktor
+     */
     public ManazerHraca() {
+        this.pocetPridanychZivotov = 0;
+        this.smrt = false;
         Platno.dajPlatno().addKeyListener(this);
-        this.hrac = new Postava(TypPostavy.HRAC, 500, -700);
+        this.hrac = new Postava(TypPostavy.HRAC, this.zaciatocneSuradniceHracaX, this.zaciatocneSuradniceHracaY);
         this.hrac.setSmer(Smer.HORE);
-        this.pozadovanySmer = Smer.ZIADNY;
         this.tempSmer = Smer.HORE;
-        this.ui = new UI();
+        this.ui = UI.getUI();
         this.zivoty = 3;
-        this.skore = 0;
-
-        try {
-            Scanner scanner = new Scanner(new File("highscore.level"));
-            this.najvyssieSkore = scanner.nextInt();
-            scanner.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        
-
-        this.ui.setHighScore(this.najvyssieSkore);
+        this.koniecHry = false;
+        this.ui.setPocetZostavajucichZivotov(this.zivoty - 1);
     }
 
+    /**
+     * Kontrolovanie a manazovanie stavu hraca a UI
+     */
     public void tick() {
         this.hrac.tick();
 
@@ -48,29 +48,71 @@ public class ManazerHraca extends KeyAdapter {
         // zjedenie bodiek a logika ich zjedenia
         switch (this.hrac.zjedzBodku()) {
             case VELKA_BODKA:
-                // TODO: pridanie logiky zjedenia velkej bodky
-                this.skore += 50;
-                this.ui.setCurrentScore(this.skore);
+                this.ui.pridajSkore(50);
                 break;
             case MALA_BODKA:
-                this.skore += 10;
-                this.ui.setCurrentScore(this.skore);
+                this.ui.pridajSkore(10);
                 break;
             default:
                 break;
         }
+
+        if (this.hrac.koliziaSDuchom()) {
+            this.zivoty--;
+            if (this.zivoty == 0) {
+                // Koniec hry
+                this.ui.ulozSkore();
+                this.ui.zobrazGameOver();
+                this.koniecHry = true;
+            } else {
+                // Stratenie zivota
+                this.smrt = true;
+                this.ui.setPocetZostavajucichZivotov(this.zivoty - 1);
+            }
+        }
+
+        // Pridava zivot ked hrac ziska 10 000 skore
+        if (this.ui.getMomentalneScore() / 10000 > this.pocetPridanychZivotov) {
+            this.zivoty++;
+            this.ui.setPocetZostavajucichZivotov(this.zivoty - 1);
+            this.pocetPridanychZivotov = this.ui.getMomentalneScore() / 10000;
+        }
         
     }
 
-    public int[] getSuradniceHraca() {
-        return new int[] {this.hrac.getX(), this.hrac.getY()};
-    }
-
+    /**
+     * @return Referencia na hraca
+     */
     public Postava getPostavaHrac() {
         return this.hrac;
     }
 
-    // princip tejto metody je prevzaty z triedy Manazer z TvaryV3
+    /**
+     * @return True, ak hrac nema ziadne dalsie zivoty
+     */
+    public boolean jeKoniecHry() {
+        return this.koniecHry;
+    }
+
+    /**
+     * Obnovi hraca na zaciatocnu poziciu
+     */
+    public void reloadHrac() {
+        this.smrt = false;
+        this.hrac.presunNaZaciatocnuPoziciu();
+    }
+
+    /**
+     * @return True, ak hrac zomrel
+     */
+    public boolean jeHracMrtvy() {
+        return this.smrt;
+    }
+
+    /**
+     * Kontroluje stlacene klavesy uzivatela
+     * Princip tejto metody je prevzaty z triedy Manazer z TvaryV3
+     */
     public void keyPressed(KeyEvent event) {
 
         // nastavuje pozadovanySmer pohybu hraca na smer poslednej stlacenej sipky

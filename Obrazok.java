@@ -35,10 +35,16 @@ public class Obrazok {
         this.uhol = 0;         
     }
 
+    /**
+     * @return Suradnica x laveho dolneho rohu obrazka
+     */
     public int getLavyDolnyX() { // ZMENA: getter pre lavy dolny x a y
         return this.lavyDolnyX;
     }
 
+    /**
+     * @return Suradnica y laveho dolneho rohu obrazka
+     */
     public int getLavyDolnyY() {
         return this.lavyDolnyY;
     }
@@ -165,8 +171,8 @@ public class Obrazok {
     public void zmenPolohu(int stredX, int stredY) {
         boolean nakresleny = this.jeViditelny;
         //this.zmaz(); ZMENA: bolo to nadbytocne
-        this.lavyDolnyX = stredX - this.sirka() / 2;
-        this.lavyDolnyY = stredY - this.vyska() / 2;
+        this.lavyDolnyX = stredX - this.getSirka() / 2;
+        this.lavyDolnyY = stredY - this.getVyska() / 2;
         if (nakresleny) {
             this.nakresli();
         }
@@ -202,14 +208,14 @@ public class Obrazok {
     /*
      * (Obrázok) Vráti všírku obrázka.
      */
-    public int sirka() { // ZMENA: zmenene na public
+    public int getSirka() { // ZMENA: zmenene na public
         return this.obrazok.getWidth();
     }
     
     /*
      * (Obrázok) Vráti výšku obrázka.
      */
-    public int vyska() { // ZMENA: zmenene na public
+    public int getVyska() { // ZMENA: zmenene na public
         return this.obrazok.getHeight();
     }    
     
@@ -221,9 +227,9 @@ public class Obrazok {
             Platno canvas = Platno.dajPlatno();
         
             AffineTransform at = new AffineTransform();
-            at.translate(this.lavyDolnyX + this.sirka() / 2, -(this.lavyDolnyY + this.vyska() / 2)); // ZMENA: pridane minus aby +y išlo hore a -y dole
+            at.translate(this.lavyDolnyX + this.getSirka() / 2, -(this.lavyDolnyY + this.getVyska() / 2)); // ZMENA: pridane minus aby +y išlo hore a -y dole
             at.rotate(this.uhol / 180.0 * Math.PI);
-            at.translate(-this.sirka() / 2, -this.vyska() / 2);
+            at.translate(-this.getSirka() / 2, -this.getVyska() / 2);
             
         
             canvas.draw(this, this.obrazok, at);

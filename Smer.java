@@ -1,5 +1,6 @@
-
-// smer pohybu hraca alebo ducha
+/**
+ * Smer pre pohyb
+ */
 public enum Smer {
     HORE(0, 1, 0),
     DOLE(0, -1, 180),
@@ -21,14 +22,25 @@ public enum Smer {
         this.nasobicY = nasobicY;
     }
 
+    /**
+     * Nasobic pre posunVodorovne pri pohybe
+     * @return -1 = dolava, 0 = nikde, 1 = doprava
+     */
     public int getNasobicX() {
         return this.nasobicX;
     }
 
+    /**
+     * Nasobic pre posunZvisle pri pohybe
+     * @return -1 = dole, 0 = nikde, 1 = hore
+     */
     public int getNasobicY() {
         return this.nasobicY;
     }
     
+    /**
+     * @return Pocet stupov v smere hodinovych ruciciek, pre otocenie v dany smer
+     */
     public int getUhol() {
         return this.uhol;
     }

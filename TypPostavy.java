@@ -1,14 +1,11 @@
 
 /**
- * Enumeration class TypDucha - write a description of the enum class here
- * 
- * @author (your name here)
- * @version (version number or date here)
+ * Urcuje typ postavy
  */
 public enum TypPostavy {
     HRAC,
     MODRY_DUCH,
-    ORANZOVY_DUCH,
     RUZOVY_DUCH,
+    ORANZOVY_DUCH,
     CERVENY_DUCH;
 }

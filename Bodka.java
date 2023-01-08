@@ -1,5 +1,7 @@
-
-// bodky, ktore hrac jedie a pridavaju mu skore
+/**
+ * Bodky, ktore hrac moze zjest a pridavaju mu skore
+ * a prípadne mu umožňujú jesť duchov
+ */
 public class Bodka {
     private int lavyDolnyX;
     private int lavyDolnyY;
@@ -13,6 +15,13 @@ public class Bodka {
     private Obdlznik stvorec;
     private Obrazok obrazok;
     
+    /**
+     * Vytvorenie novej bodky
+     * 
+     * @param lavyDolnyX Suradnica x laveho dolneho rohu bodky
+     * @param lavyDolnyY Suradnica y laveho dolneho rohu bodky
+     * @param typBodky Typ bodky
+     */
     public Bodka(int lavyDolnyX, int lavyDolnyY, TypBodky typBodky) {
         this.lavyDolnyX = lavyDolnyX;
         this.lavyDolnyY = lavyDolnyY;
@@ -37,6 +46,9 @@ public class Bodka {
         }
     }
 
+    /**
+     * Zjedenie bodky
+     */
     public void zjedz() {
         if (this.typBodky == TypBodky.MALA_BODKA) {
             this.stvorec.skry();
@@ -46,11 +58,16 @@ public class Bodka {
         this.jeZjedena = true;
     }
 
-    
+    /**
+     * @return True, ak bodka je už zjedená
+     */
     public boolean jeZjedena() {
         return this.jeZjedena;    
     }
 
+    /**
+     * Obnovenie bodky
+     */
     public void obnov() {
         if (this.typBodky == TypBodky.MALA_BODKA) {
             this.stvorec.zobraz();
@@ -60,6 +77,9 @@ public class Bodka {
         this.jeZjedena = false;
     }
     
+    /**
+     * Skrytie bodky z platna
+     */
     public void skry() {
         if (this.typBodky == TypBodky.MALA_BODKA) {
             this.stvorec.skry();
@@ -68,6 +88,9 @@ public class Bodka {
         }
     }
 
+    /**
+     * Zobrazenie bodky na platne
+     */
     public void zobraz() {
         if (this.typBodky == TypBodky.MALA_BODKA) {
             this.stvorec.zobraz();
@@ -76,7 +99,10 @@ public class Bodka {
         }
     }
 
-    public TypBodky geTypBodky() {
+    /**
+     * @return Typ bodky
+     */
+    public TypBodky getTypBodky() {
         return this.typBodky;
     }
 }

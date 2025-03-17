@@ -1,3 +1,5 @@
+Semestrálna práca na predmet Informatika 1
+
 Všetky použité obrázky sú z originálnej hry pac-man
 
 Pre spustenie hry vytvorte inštanciu triedy Hra.
